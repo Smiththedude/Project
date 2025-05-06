@@ -53,27 +53,24 @@ def bsg_people():
             dbConnection.close()
 
 
-@app.route("/towns", methods=["GET"])
+@app.route("/Towns", methods=["GET"])
 def db_towns():
     try:
         dbConnection = db.connectDB()  # Open our database connection
 
         # Create and execute our queries
-        # In query1, we use a JOIN clause to display the names of the homeworlds,
-        #       instead of just ID values
         query1 = "SELECT * FROM Towns;"
         towns = db.query(dbConnection, query1).fetchall()
-        #homeworlds = db.query(dbConnection, query2).fetchall()
 
-        # Render the bsg-people.j2 file, and also send the renderer
-        # a couple objects that contains bsg_people and bsg_homeworld information
+        # Render the Towns.j2 file, and also send the renderer
+        # an object that contains Towns information
         return render_template(
             "Towns.j2", towns=towns
         )
     
     except Exception as e:
         print(f"Error executing queries: {e}")
-        return "An error occurred while executing the database queries.", 500
+        return f"An error occurred while executing the database queries: {e}", 500
 
     finally:
         # Close the DB connection, if it exists
