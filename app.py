@@ -80,7 +80,26 @@ def db_towns():
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
 
+@app.route("/shops", methods=["GET"])
+def db_shops():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
 
+        # Create and execute our queries
+        query1 = "SELECT * FROM Shops;"
+        shops = db.query(dbConnection, query1).fetchall()
+
+        # Render the shops.j2 file and pass the shops data
+        return render_template("shops.j2", shops=shops)
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return "An error occurred while executing the database queries.", 500
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
 
 # ########################################
 # ########## LISTENER
