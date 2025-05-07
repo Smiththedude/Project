@@ -53,17 +53,14 @@ def bsg_people():
             dbConnection.close()
 
 
-@app.route("/towns", methods=["GET"])
+@app.route("/Towns", methods=["GET"])
 def db_towns():
     try:
         dbConnection = db.connectDB()  # Open our database connection
 
         # Create and execute our queries
-        # In query1, we use a JOIN clause to display the names of the homeworlds,
-        #       instead of just ID values
         query1 = "SELECT * FROM Towns;"
         towns = db.query(dbConnection, query1).fetchall()
-        #homeworlds = db.query(dbConnection, query2).fetchall()
 
         # Render the Towns.j2 file, and also send the renderer
         # an object that contains Towns information
