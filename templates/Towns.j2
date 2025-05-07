@@ -11,12 +11,11 @@
             {% for key in towns[0].keys() %}
             <th>{{ key }}</th>
             {% endfor %}
-            <th></th>
         </tr>
     </thead>
 
     <tbody>
-        {# For each row, print the id, fname, lname, homeworld and age #}
+        {# For each row, print the id, name, region, and alignment #}
         {% for town in towns %}
         <tr>
             <td>{{ town.TownID }}</td>
@@ -28,6 +27,42 @@
     </tbody>
 </table>
 
+{# CREATE form #}
+<h2>Create a Town</h2>
+<form class="cuForm" id="create_town_form">
+    <label for="create_town_name">Town Name: </label>
+    <input type="text" name="create_town_name" id="create_town_name" required>
+
+    <label for="create_town_region">Region: </label>
+    <input type="text" name="create_town_region" id="create_town_region" required>
+
+    <label for="create_town_alignment">Alignment: </label>
+    <input type="text" name="create_town_alignment" id="create_town_alignment">
+
+    <input type="submit">
+</form>
+
+{# UPDATE form #}
+<h2>Update a Town</h2>
+<form class="cuForm" id="update_town_form">
+    <label for="update_town_id">Town to Update: </label>
+    <select name="update_town_id" id="update_town_id" required>
+        <option value="" disabled selected>Select a Town</option>
+        {% for town in towns %}
+        <option value="{{ town.TownID }}">
+            {{ town.TownID }} - {{ town.TownName }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label for="update_town_region">New Region: </label>
+    <input type="text" name="update_town_region" id="update_town_region">
+
+    <label for="update_town_alignment">New Alignment: </label>
+    <input type="text" name="update_town_alignment" id="update_town_alignment">
+
+    <input type="submit">
+</form>
 
 
 {% endblock %}

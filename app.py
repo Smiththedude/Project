@@ -44,7 +44,7 @@ def bsg_people():
         )
     
     except Exception as e:
-        print(f"Error executing queries: {e}")
+        print(f"Error retrieving people: {e}")
         return "An error occurred while executing the database queries.", 500
 
     finally:
@@ -72,7 +72,7 @@ def db_towns():
         )
     
     except Exception as e:
-        print(f"Error executing queries: {e}")
+        print(f"Error retrieving towns: {e}")
         return f"An error occurred while executing the database queries: {e}", 500
 
     finally:
@@ -93,7 +93,7 @@ def db_shops():
         return render_template("shops.j2", shops=shops)
 
     except Exception as e:
-        print(f"Error executing queries: {e}")
+        print(f"Error retrieving shops: {e}")
         return "An error occurred while executing the database queries.", 500
 
     finally:
@@ -114,8 +114,29 @@ def db_quests():
         return render_template("quests.j2", quests=quests)
 
     except Exception as e:
-        print(f"Error executing query: {e}")
+        print(f"Error retrieving quests: {e}")
         return "An error occurred while retrieving quests.", 500
+
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+
+@app.route("/poi", methods=["GET"])
+def db_pois():
+    try:
+        dbConnection = db.connectDB()  # Open the database connection
+
+        # Query all points of interest
+        query = "SELECT * FROM Points_of_Interest;"
+        pois = db.query(dbConnection, query).fetchall()
+
+        # Render the points_of_interest.j2 file with POI data
+        return render_template("poi.j2", pois=pois)
+
+    except Exception as e:
+        print(f"Error retrieving POIs: {e}")
+        return "An error occurred while retrieving points of interest.", 500
 
     finally:
         if "dbConnection" in locals() and dbConnection:
