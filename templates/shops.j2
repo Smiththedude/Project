@@ -1,0 +1,79 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h1>Shops</h1>
+
+{# READ table #}
+<table>
+    <thead>
+        {# For the table header row, we print the DB attribute names #}
+        <tr>
+            {% for key in shops[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {# For each row, print the ShopID, ShopName, Location, and Owner #}
+        {% for shop in shops %}
+        <tr>
+            <td>{{ shop.ShopID }}</td>
+            <td>{{ shop.ShopName }}</td>
+            <td>{{ shop.Location }}</td>
+            <td>{{ shop.Owner | default('', true) }}</td>
+
+            {# DELETE form #}
+            <form id="delete_shop_form">
+                <input type="hidden" name="delete_shop_id" value="{{ shop.ShopID }}">
+                <input type="hidden" name="delete_shop_name" value="{{ shop.ShopName }}">
+                <td>
+                    <button type="submit">
+                        Delete
+                    </button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{# CREATE form #}
+<h2>Create a Shop</h2>
+<form class="cuForm" id="create_shop_form">
+    <label for="create_shop_name">Shop Name: </label>
+    <input type="text" name="create_shop_name" id="create_shop_name" required>
+
+    <label for="create_shop_location">Location: </label>
+    <input type="text" name="create_shop_location" id="create_shop_location" required>
+
+    <label for="create_shop_owner">Owner: </label>
+    <input type="text" name="create_shop_owner" id="create_shop_owner">
+
+    <input type="submit">
+</form>
+
+{# UPDATE form #}
+<h2>Update a Shop</h2>
+<form class="cuForm" id="update_shop_form">
+    <label for="update_shop_id">Shop to Update: </label>
+    <select name="update_shop_id" id="update_shop_id" required>
+        <option value="" disabled selected>Select a Shop</option>
+        {% for shop in shops %}
+        <option value="{{ shop.ShopID }}" required>
+            {{ shop.ShopID }} - {{ shop.ShopName }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label for="update_shop_location">Location: </label>
+    <input type="text" name="update_shop_location" id="update_shop_location">
+
+    <label for="update_shop_owner">Owner: </label>
+    <input type="text" name="update_shop_owner" id="update_shop_owner">
+
+    <input type="submit">
+</form>
+
+{% endblock %}

@@ -1,0 +1,100 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h1>Quests</h1>
+
+{# READ table #}
+<table>
+    <thead>
+        <tr>
+            {% for key in quests[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for quest in quests %}
+        <tr>
+            <td>{{ quest.QuestID }}</td>
+            <td>{{ quest.Shops_ShopID }}</td>
+            <td>{{ quest.Points_of_Interest_POIID }}</td>
+            <td>{{ quest.QuestName }}</td>
+            <td>{{ quest.QuestGiver }}</td>
+            <td>{{ quest.QuestDesc | default('', true) }}</td>
+            <td>{{ quest.QuestReward | default('', true) }}</td>
+            <td>{{ quest.QuestStatus | default('', true) }}</td>
+            <td>{{ quest.QuestDiff }}</td>
+
+            {# DELETE form #}
+            <form id="delete_quest_form">
+                <input type="hidden" name="delete_quest_id" value="{{ quest.QuestID }}">
+                <input type="hidden" name="delete_quest_name" value="{{ quest.QuestName }}">
+                <td>
+                    <button type="submit">
+                        Delete
+                    </button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{# CREATE form #}
+<h2>Create a Quest</h2>
+<form class="cuForm" id="create_quest_form">
+    <label for="create_quest_name">Quest Name: </label>
+    <input type="text" name="create_quest_name" id="create_quest_name" required>
+
+    <label for="create_quest_giver">Quest Giver: </label>
+    <input type="text" name="create_quest_giver" id="create_quest_giver" required>
+
+    <label for="create_quest_desc">Description: </label>
+    <input type="text" name="create_quest_desc" id="create_quest_desc">
+
+    <label for="create_quest_reward">Reward: </label>
+    <input type="text" name="create_quest_reward" id="create_quest_reward">
+
+    <label for="create_quest_status">Status: </label>
+    <input type="text" name="create_quest_status" id="create_quest_status">
+
+    <label for="create_quest_diff">Difficulty (1-10): </label>
+    <input type="number" name="create_quest_diff" id="create_quest_diff" min="1" max="10" required>
+
+    <label for="create_shop_id">Shop ID: </label>
+    <input type="number" name="create_shop_id" id="create_shop_id" required>
+
+    <label for="create_poi_id">POI ID: </label>
+    <input type="number" name="create_poi_id" id="create_poi_id" required>
+
+    <input type="submit">
+</form>
+
+{# UPDATE form #}
+<h2>Update a Quest</h2>
+<form class="cuForm" id="update_quest_form">
+    <label for="update_quest_id">Quest to Update: </label>
+    <select name="update_quest_id" id="update_quest_id" required>
+        <option value="" disabled selected>Select a Quest</option>
+        {% for quest in quests %}
+        <option value="{{ quest.QuestID }}">
+            {{ quest.QuestID }} - {{ quest.QuestName }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label for="update_quest_status">Status: </label>
+    <input type="text" name="update_quest_status" id="update_quest_status">
+
+    <label for="update_quest_reward">Reward: </label>
+    <input type="text" name="update_quest_reward" id="update_quest_reward">
+
+    <label for="update_quest_diff">Difficulty: </label>
+    <input type="number" name="update_quest_diff" id="update_quest_diff" min="1" max="10">
+
+    <input type="submit">
+</form>
+
+{% endblock %}

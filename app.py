@@ -4,7 +4,7 @@
 from flask import Flask, render_template, request, redirect
 import database.db_connector as db
 
-PORT = 58008
+PORT = 58009
 
 app = Flask(__name__)
 
@@ -44,7 +44,7 @@ def bsg_people():
         )
     
     except Exception as e:
-        print(f"Error executing queries: {e}")
+        print(f"Error retrieving people: {e}")
         return "An error occurred while executing the database queries.", 500
 
     finally:
@@ -69,7 +69,7 @@ def db_towns():
         )
     
     except Exception as e:
-        print(f"Error executing queries: {e}")
+        print(f"Error retrieving towns: {e}")
         return f"An error occurred while executing the database queries: {e}", 500
 
     finally:
@@ -77,7 +77,67 @@ def db_towns():
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
 
+@app.route("/shops", methods=["GET"])
+def db_shops():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
 
+        # Create and execute our queries
+        query1 = "SELECT * FROM Shops;"
+        shops = db.query(dbConnection, query1).fetchall()
+
+        # Render the shops.j2 file and pass the shops data
+        return render_template("shops.j2", shops=shops)
+
+    except Exception as e:
+        print(f"Error retrieving shops: {e}")
+        return "An error occurred while executing the database queries.", 500
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+@app.route("/quests", methods=["GET"])
+def db_quests():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+
+        # Query all quests
+        query = "SELECT * FROM Quests;"
+        quests = db.query(dbConnection, query).fetchall()
+
+        # Render the quests.j2 file and pass the quests data
+        return render_template("quests.j2", quests=quests)
+
+    except Exception as e:
+        print(f"Error retrieving quests: {e}")
+        return "An error occurred while retrieving quests.", 500
+
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+
+@app.route("/poi", methods=["GET"])
+def db_pois():
+    try:
+        dbConnection = db.connectDB()  # Open the database connection
+
+        # Query all points of interest
+        query = "SELECT * FROM Points_of_Interest;"
+        pois = db.query(dbConnection, query).fetchall()
+
+        # Render the points_of_interest.j2 file with POI data
+        return render_template("poi.j2", pois=pois)
+
+    except Exception as e:
+        print(f"Error retrieving POIs: {e}")
+        return "An error occurred while retrieving points of interest.", 500
+
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
 
 # ########################################
 # ########## LISTENER

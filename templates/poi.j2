@@ -1,0 +1,85 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h1>Points of Interest</h1>
+
+{# READ table #}
+<table>
+    <thead>
+        <tr>
+            {% for key in pois[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for poi in pois %}
+        <tr>
+            <td>{{ poi.POIID }}</td>
+            <td>{{ poi.Towns_TownID }}</td>
+            <td>{{ poi.POI_Name }}</td>
+            <td>{{ poi.POI_Type }}</td>
+            <td>{{ poi.POI_History | default('', true) }}</td>
+            <td>{{ poi.POI_Desc | default('', true) }}</td>
+
+            {# DELETE form #}
+            <form id="delete_poi_form">
+                <input type="hidden" name="delete_poi_id" value="{{ poi.POI_ID }}">
+                <td>
+                    <button type="submit">Delete</button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{# CREATE form #}
+<h2>Create a Point of Interest</h2>
+<form class="cuForm" id="create_poi_form">
+    <label for="create_poi_name">Name: </label>
+    <input type="text" name="create_poi_name" id="create_poi_name" required>
+
+    <label for="create_poi_type">Type: </label>
+    <input type="text" name="create_poi_type" id="create_poi_type" required>
+
+    <label for="create_poi_history">History: </label>
+    <input type="text" name="create_poi_history" id="create_poi_history">
+
+    <label for="create_poi_desc">Description: </label>
+    <input type="text" name="create_poi_desc" id="create_poi_desc">
+
+    <label for="create_town_id">Town ID: </label>
+    <input type="number" name="create_town_id" id="create_town_id" required>
+
+    <input type="submit">
+</form>
+
+{# UPDATE form #}
+<h2>Update a Point of Interest</h2>
+<form class="cuForm" id="update_poi_form">
+    <label for="update_poi_id">POI to Update: </label>
+    <select name="update_poi_id" id="update_poi_id" required>
+        <option value="" disabled selected>Select a POI</option>
+        {% for poi in pois %}
+        <option value="{{ poi.POI_ID }}">
+            {{ poi.POI_ID }} - {{ poi.POI_Name }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label for="update_poi_type">Type: </label>
+    <input type="text" name="update_poi_type" id="update_poi_type">
+
+    <label for="update_poi_history">History: </label>
+    <input type="text" name="update_poi_history" id="update_poi_history">
+
+    <label for="update_poi_desc">Description: </label>
+    <input type="text" name="update_poi_desc" id="update_poi_desc">
+
+    <input type="submit">
+</form>
+
+{% endblock %}
