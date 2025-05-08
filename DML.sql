@@ -155,22 +155,3 @@ FROM Quests
 INNER JOIN Town_Quests ON Quests.QuestID = Town_Quests.Quests_QuestID
 WHERE Town_Quests.Towns_TownID = @TownID;
 
---###################################
--- RELATIONSHIP TABLES
---###################################
-
--- Query to associate a town with a shop (M:N)
-INSERT INTO Town_Shops (Towns_TownID, Shops_ShopID)
-VALUES (@TownID, @ShopID);
-
--- Query to disassociate a town from a shop
-DELETE FROM Town_Shops
-WHERE Towns_TownID = @TownID AND Shops_ShopID = @ShopID;
-
--- Query to associate a town with a quest (M:N)
-INSERT INTO Town_Quests (Towns_TownID, Quests_QuestID)
-VALUES (@TownID, @QuestID);
-
--- Query to disassociate a town from a quest
-DELETE FROM Town_Quests
-WHERE Towns_TownID = @TownID AND Quests_QuestID = @QuestID;
