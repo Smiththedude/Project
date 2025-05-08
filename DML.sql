@@ -21,3 +21,84 @@ WHERE TownID = @TownID;
 -- Query to SELECT towns by region
 SELECT * FROM Towns
 WHERE Region = @Region;
+
+--###################################
+--TOWNS PAGE
+--###################################
+
+-- get all towns data for towns with specific alignment
+SELECT TownID, TownName, Region, Alignment WHERE
+Alignment = :user_chosen_alignemnt
+
+--get a town's data for the Update Town form
+SELECT TownID, TownName, Region, Alignment FROM Towns WHERE
+TownID = town_id_selected_from_page
+
+--add new town
+INSERT INTO Towns (TownID, TownName, Region, Alignment) VALUES
+(:TownIDinput, :TownNameinput, :Regioninput, :Alignmentinput)
+
+--associate a town with a shop (M:M)
+INSERT INTO Town_Shops (Towns_TownID, Shops_ShopID) VALUES
+(:town_id_from_dropdown_input, :shop_id_from_dropdown_input)
+
+--assocoiate a town with a quest (M:M)
+INSERT INTO Town_Quests (Towns_TownID, Quests_QuestID) VALUES
+(:town_id_from_dropdown_input, :quest_id_from_dropdown_input)
+
+--update a selected town's data based on submission of Update Town form
+UPDATE Towns SET TownName = :TownNameinput, Region = Regioninput, 
+Alignment = Alignmentinput WHERE TownID = :town_id_from_form
+
+--delete a town
+DELETE FROM Towns WHERE TownID = :town_id_selected_from_page
+
+--disassociate a town from a shop
+DELETE FROM Town_Shops WHERE
+TownID = :town_id_selected_from_town_list AND
+ShopID = :shop_id_selected_from_shop_list
+
+--disassociate a town from a quest
+DELETE FROM Town_Quests WHERE
+TownID = :town_id_selected_from_town_list AND
+QuestID = :quest_id_selected_from_shop_list
+
+--###################################
+--SHOPS PAGE
+--###################################
+
+-- get all shops data for towns with specific type
+SELECT ShopID, ShopName, ShopOwner, ShopType, ShopInventory WHERE
+ShopType = :user_chosen_type
+
+--get a shop's data for the Update Town form
+SELECT ShopID, ShopName, ShopOwner, ShopType, ShopInventory FROM Towns WHERE
+ShopID = shop_id_selected_from_page
+
+--get all shops with their associated towns
+SELECT Shops.ShopID, Shops.ShopName, Shops.ShopInventory, Towns.TownName
+FROM Shops
+INNER JOIN Town_Shops ON Shops.ShopID = Town_Shops.ShopID
+INNER JOIN Towns ON Town_Shops.TownID = Towns.TownID
+GROUP BY TownName
+ORDER BY TownName
+
+--add new shop
+INSERT INTO Shops (ShopID, ShopName, ShopOwner, ShopType, ShopInventory) VALUES (:ShopIDinput, :ShopNameinput, :ShopOwnerinput, :ShopTypeinput, :ShopInventoryinput)
+
+--associate a shop with a town (M:M)
+INSERT INTO Town_Shops (Towns_TownID, Shops_ShopID) VALUES
+(:town_id_from_dropdown_input, :shop_id_from_dropdown_input)
+
+--update a selected shop's data based on submission of Update Shop form
+UPDATE Shops SET ShopName = :ShopNameinput, ShopOwner = ShopOwnerinput, 
+ShopType = ShopTypeinput, ShopInventory = ShopInventoryinput
+WHERE ShopID = :shop_id_from_form
+
+--delete a shop
+DELETE FROM Shops WHERE ShopID = :shop_id_selected_from_page
+
+--disassociate a shop from a town
+DELETE FROM Town_Shops WHERE
+TownID = :town_id_selected_from_town_list AND
+ShopID = :shop_id_selected_from_shop_list
