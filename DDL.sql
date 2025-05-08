@@ -109,7 +109,7 @@ CREATE TABLE `Quests` (
   `QuestDesc` varchar(255) NOT NULL,
   `QuestReward` varchar(255) NOT NULL,
   `QuestStatus` varchar(45) NOT NULL,
-  `QuestDiff` int(11) NOT NULL,
+  `QuestDiff` int(11) NOT NULL,               /* Difficulty of the quest (scale of 10) */
   PRIMARY KEY (`QuestID`),
   UNIQUE KEY `QuestID_UNIQUE` (`QuestID`),
   UNIQUE KEY `QuestName_UNIQUE` (`QuestName`),
