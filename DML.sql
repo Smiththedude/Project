@@ -102,3 +102,75 @@ DELETE FROM Shops WHERE ShopID = :shop_id_selected_from_page
 DELETE FROM Town_Shops WHERE
 TownID = :town_id_selected_from_town_list AND
 ShopID = :shop_id_selected_from_shop_list
+
+--###################################
+-- POINTS OF INTEREST PAGE
+--###################################
+
+-- Query to SELECT all points of interest
+SELECT * FROM Points_of_Interest;
+
+-- Query to INSERT a new point of interest
+INSERT INTO Points_of_Interest (TownID, POI_Name, POI_Type, POI_History, POI_Desc)
+VALUES (@TownID, @POI_Name, @POI_Type, @POI_History, @POI_Desc);
+
+-- Query to UPDATE a point of interest
+UPDATE Points_of_Interest
+SET POI_Name = @NewPOI_Name, POI_Type = @NewPOI_Type, POI_History = @NewPOI_History, POI_Desc = @NewPOI_Desc
+WHERE POI_ID = @POI_ID;
+
+-- Query to DELETE a point of interest
+DELETE FROM Points_of_Interest
+WHERE POI_ID = @POI_ID;
+
+-- Query to SELECT points of interest by town
+SELECT POI_ID, POI_Name, POI_Type, POI_History, POI_Desc
+FROM Points_of_Interest
+WHERE TownID = @TownID;
+
+--###################################
+-- QUESTS PAGE
+--###################################
+
+-- Query to SELECT all quests
+SELECT * FROM Quests;
+
+-- Query to INSERT a new quest
+INSERT INTO Quests (ShopID, POI_ID, QuestName, QuestGiver, QuestDesc, QuestReward, QuestStatus, QuestDiff)
+VALUES (@ShopID, @POI_ID, @QuestName, @QuestGiver, @QuestDesc, @QuestReward, @QuestStatus, @QuestDiff);
+
+-- Query to UPDATE a quest
+UPDATE Quests
+SET QuestName = @NewQuestName, QuestGiver = @NewQuestGiver, QuestDesc = @NewQuestDesc, 
+    QuestReward = @NewQuestReward, QuestStatus = @NewQuestStatus, QuestDiff = @NewQuestDiff
+WHERE QuestID = @QuestID;
+
+-- Query to DELETE a quest
+DELETE FROM Quests
+WHERE QuestID = @QuestID;
+
+-- Query to SELECT quests by town
+SELECT Quests.QuestID, Quests.QuestName, Quests.QuestGiver, Quests.QuestDesc, Quests.QuestReward, Quests.QuestStatus, Quests.QuestDiff
+FROM Quests
+INNER JOIN Town_Quests ON Quests.QuestID = Town_Quests.Quests_QuestID
+WHERE Town_Quests.Towns_TownID = @TownID;
+
+--###################################
+-- RELATIONSHIP TABLES
+--###################################
+
+-- Query to associate a town with a shop (M:N)
+INSERT INTO Town_Shops (Towns_TownID, Shops_ShopID)
+VALUES (@TownID, @ShopID);
+
+-- Query to disassociate a town from a shop
+DELETE FROM Town_Shops
+WHERE Towns_TownID = @TownID AND Shops_ShopID = @ShopID;
+
+-- Query to associate a town with a quest (M:N)
+INSERT INTO Town_Quests (Towns_TownID, Quests_QuestID)
+VALUES (@TownID, @QuestID);
+
+-- Query to disassociate a town from a quest
+DELETE FROM Town_Quests
+WHERE Towns_TownID = @TownID AND Quests_QuestID = @QuestID;
