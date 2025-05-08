@@ -30,7 +30,7 @@ CREATE TABLE `Towns` (
 INSERT INTO `Towns` 
 VALUES 
   (1, 'Neverwinter', 'Sword Coast', 'NG'),
-  (2, 'Baldur\'s Gate', 'Forgotten Realms', 'NN'),
+  (2, 'Baldur''s Gate', 'Forgotten Realms', 'NN'),
   (3, 'Radiant Citadel', 'Ethereal Plane', 'LG'),
   (4, 'Menzoberranzan', 'Forgotten Realms', 'CE');
 
@@ -47,13 +47,13 @@ CREATE TABLE `Points_of_Interest` (
   UNIQUE KEY `poiID_UNIQUE` (`POIID`),
   UNIQUE KEY `poiName_UNIQUE` (`POI_Name`),
   KEY `fk_Points_of_Interest_Towns1_idx` (`Towns_TownID`),
-  CONSTRAINT `fk_Points_of_Interest_Towns1` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Points_of_Interest_Towns1` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE RESTRICT ON UPDATE CASCADE
 );
 
 
 /* Sample Data for POI */
 INSERT INTO `Points_of_Interest` VALUES (5,1,'Statue of Lorde','Quest Point','','A tall statue of an ancient warrior cast in brone and weathered over the ages.'),
-(6,3,'Menthre\'s Peak','Viewpoint','','The highest point of Baldur\'s Gate that looks out over the area.'),
+(6,3,'Menthre''s Peak','Viewpoint','','The highest point of Baldur''s Gate that looks out over the area.'),
 (7,1,'Emerald Cove','Quest Point','','An old cove used by pirates of the Sword Coast to hide themselves from patrolling Imperial ships.'),
 (8,4,'Thay Hatchery','Misc.','','An ancient hatching ground used by the Thay to grow their numbers.');
 
@@ -73,8 +73,8 @@ INSERT INTO `Shops`
 VALUES 
 (1, 'Arm & Mint', 'Burg', 'Armaments', 'Broadsword, Dagger, Dirk, Wooden Shield, Leather Cuirass, Chainmail, Leather Helmet, Leather Boots'),
 (2, 'What Ales You', 'Lambert', 'Tavern', 'Ale, Lager, Rum, Mead'),
-(3, 'Plane ol\' Beds', 'Krul\'un', 'Inn', NULL),
-(4, 'Blain\'s', 'David', 'Magics', 'Eldritch Blast, Create Bonfire, Flaming Touch, Ray of Frost, Prestidigitation, Healing Word');
+(3, 'Plane ol'' Beds', 'Krul''un', 'Inn', NULL),
+(4, 'Blain''s', 'David', 'Magics', 'Eldritch Blast, Create Bonfire, Flaming Touch, Ray of Frost, Prestidigitation, Healing Word');
 
 
 
@@ -87,8 +87,8 @@ CREATE TABLE `Town_Shops` (
   PRIMARY KEY (`Towns_TownID`,`Shops_ShopID`),
   KEY `fk_Towns_has_Shops_Shops1_idx` (`Shops_ShopID`),
   KEY `fk_Towns_has_Shops_Towns_idx` (`Towns_TownID`),
-  CONSTRAINT `fk_Towns_has_Shops_Shops1` FOREIGN KEY (`Shops_ShopID`) REFERENCES `Shops` (`ShopID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Towns_has_Shops_Towns` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_Towns_has_Shops_Shops1` FOREIGN KEY (`Shops_ShopID`) REFERENCES `Shops` (`ShopID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `fk_Towns_has_Shops_Towns` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ;
 
 
@@ -116,8 +116,8 @@ CREATE TABLE `Quests` (
   UNIQUE KEY `QuestGiver_UNIQUE` (`QuestGiver`),
   KEY `fk_Quests_Points_of_Interest1_idx` (`Points_of_Interest_POIID`),
   KEY `fk_Quests_Shops1_idx` (`Shops_ShopID`),
-  CONSTRAINT `Quests_POI` FOREIGN KEY (`Points_of_Interest_POIID`) REFERENCES `Points_of_Interest` (`POIID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `Quests_Shop` FOREIGN KEY (`Shops_ShopID`) REFERENCES `Shops` (`ShopID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `Quests_POI` FOREIGN KEY (`Points_of_Interest_POIID`) REFERENCES `Points_of_Interest` (`POIID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `Quests_Shop` FOREIGN KEY (`Shops_ShopID`) REFERENCES `Shops` (`ShopID`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ;
 
 
@@ -137,8 +137,8 @@ CREATE TABLE `Town_Quests` (
   `Quests_QuestID` int(11) NOT NULL,
   PRIMARY KEY (`Towns_TownID`,`Quests_QuestID`),
   KEY `Town_Quests_Quests_idx` (`Quests_QuestID`),
-  CONSTRAINT `Town_Quests_Quests` FOREIGN KEY (`Quests_QuestID`) REFERENCES `Quests` (`QuestID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `Town_Quests_Towns` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `Town_Quests_Quests` FOREIGN KEY (`Quests_QuestID`) REFERENCES `Quests` (`QuestID`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `Town_Quests_Towns` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ;
 
 
