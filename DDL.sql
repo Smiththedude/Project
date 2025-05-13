@@ -47,7 +47,7 @@ CREATE TABLE `Points_of_Interest` (
   UNIQUE KEY `poiID_UNIQUE` (`POIID`),
   UNIQUE KEY `poiName_UNIQUE` (`POI_Name`),
   KEY `fk_Points_of_Interest_Towns1_idx` (`Towns_TownID`),
-  CONSTRAINT `fk_Points_of_Interest_Towns1` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `fk_Points_of_Interest_Towns1` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
@@ -87,8 +87,8 @@ CREATE TABLE `Town_Shops` (
   PRIMARY KEY (`Towns_TownID`,`Shops_ShopID`) INT NOT NULL AUTO_INCREMENT,
   KEY `fk_Towns_has_Shops_Shops1_idx` (`Shops_ShopID`),
   KEY `fk_Towns_has_Shops_Towns_idx` (`Towns_TownID`),
-  CONSTRAINT `fk_Towns_has_Shops_Shops1` FOREIGN KEY (`Shops_ShopID`) REFERENCES `Shops` (`ShopID`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `fk_Towns_has_Shops_Towns` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `fk_Towns_has_Shops_Shops1` FOREIGN KEY (`Shops_ShopID`) REFERENCES `Shops` (`ShopID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_Towns_has_Shops_Towns` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ;
 
 
@@ -116,8 +116,8 @@ CREATE TABLE `Quests` (
   UNIQUE KEY `QuestGiver_UNIQUE` (`QuestGiver`),
   KEY `fk_Quests_Points_of_Interest1_idx` (`Points_of_Interest_POIID`),
   KEY `fk_Quests_Shops1_idx` (`Shops_ShopID`),
-  CONSTRAINT `Quests_POI` FOREIGN KEY (`Points_of_Interest_POIID`) REFERENCES `Points_of_Interest` (`POIID`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `Quests_Shop` FOREIGN KEY (`Shops_ShopID`) REFERENCES `Shops` (`ShopID`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `Quests_POI` FOREIGN KEY (`Points_of_Interest_POIID`) REFERENCES `Points_of_Interest` (`POIID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Quests_Shop` FOREIGN KEY (`Shops_ShopID`) REFERENCES `Shops` (`ShopID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ;
 
 
@@ -137,8 +137,8 @@ CREATE TABLE `Town_Quests` (
   `Quests_QuestID` int(11) NOT NULL,
   PRIMARY KEY (`Towns_TownID`,`Quests_QuestID`) INT NOT NULL AUTO_INCREMENT,
   KEY `Town_Quests_Quests_idx` (`Quests_QuestID`),
-  CONSTRAINT `Town_Quests_Quests` FOREIGN KEY (`Quests_QuestID`) REFERENCES `Quests` (`QuestID`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  CONSTRAINT `Town_Quests_Towns` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE RESTRICT ON UPDATE CASCADE
+  CONSTRAINT `Town_Quests_Quests` FOREIGN KEY (`Quests_QuestID`) REFERENCES `Quests` (`QuestID`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `Town_Quests_Towns` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ;
 
 
