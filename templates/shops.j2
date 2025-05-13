@@ -21,8 +21,8 @@
         <tr>
             <td>{{ shop.ShopID }}</td>
             <td>{{ shop.ShopName }}</td>
-            <td>{{ shop.Location }}</td>
-            <td>{{ shop.Owner | default('', true) }}</td>
+            <td>{{ shop.ShopOwner | default('', true) }}</td>
+            <td>{{ shop.ShopType | default('', true) }}</td>
 
             {# DELETE form #}
             <form id="delete_shop_form">

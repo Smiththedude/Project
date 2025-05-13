@@ -119,6 +119,56 @@ def db_quests():
             dbConnection.close()
 
 
+@app.route("/town_quests", methods=["GET"])
+def db_town_quests():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+
+        # Query all town_quests
+        query = "SELECT Town_Quests.Towns_TownID, Towns.TownName AS Town, Town_Quests.Quests_QuestID, Quests.QuestName AS Quest \
+            FROM Town_Quests \
+            JOIN Towns ON Town_Quests.Towns_TownID = Towns.TownID \
+            JOIN Quests ON Town_Quests.Quests_QuestID = Quests.QuestID \
+            ORDER BY Town_Quests.Towns_TownID ASC;"
+        town_quests = db.query(dbConnection, query).fetchall()
+
+        # Render the town_quests.j2 file and pass the town_quests data
+        return render_template("town_quests.j2", town_quests=town_quests)
+
+    except Exception as e:
+        print(f"Error retrieving quests: {e}")
+        return "An error occurred while retrieving town_quests.", 500
+
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+
+@app.route("/town_shops", methods=["GET"])
+def db_town_shops():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+
+        # Query all town_shops
+        query = "SELECT Town_Shops.Towns_TownID, Towns.TownName AS Town, Town_Shops.Shops_ShopID, Shops.ShopName AS Shop \
+            FROM Town_Shops \
+            JOIN Towns ON Town_Shops.Towns_TownID = Towns.TownID \
+            JOIN Shops ON Town_Shops.Shops_ShopID = Shops.ShopID \
+            ORDER BY Town_Shops.Towns_TownID ASC;"
+        town_shops = db.query(dbConnection, query).fetchall()
+
+        # Render the town_shops.j2 file and pass the town_shops data
+        return render_template("town_shops.j2", town_shops=town_shops)
+
+    except Exception as e:
+        print(f"Error retrieving quests: {e}")
+        return "An error occurred while retrieving town_shops.", 500
+
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+
 @app.route("/poi", methods=["GET"])
 def db_pois():
     try:

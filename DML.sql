@@ -155,3 +155,40 @@ FROM Quests
 INNER JOIN Town_Quests ON Quests.QuestID = Town_Quests.Quests_QuestID
 WHERE Town_Quests.Towns_TownID = @TownID;
 
+--###################################
+-- TOWN_QUESTS PAGE
+--###################################
+
+-- Query to SELECT all town-quest associations with relevant names
+SELECT Town_Quests.Towns_TownID, Towns.TownName AS Town, Town_Quests.Quests_QuestID, Quests.QuestName AS Quest
+FROM Town_Quests
+JOIN Towns ON Town_Quests.Towns_TownID = Towns.TownID
+JOIN Quests ON Town_Quests.Quests_QuestID = Quests.QuestID;
+
+-- dissasociate a town from a quest (M:M)
+DELETE FROM Town_Quests WHERE
+TownID = :town_id_selected_from_town_list AND
+QuestID = :quest_id_selected_from_quest_list;
+
+-- associate a town with a quest (M:M)
+INSERT INTO Town_Quests (Towns_TownID, Quests_QuestID) VALUES
+(:town_id_from_dropdown_input, :quest_id_from_dropdown_input);
+
+--###################################
+-- TOWN_SHOPS PAGE
+--###################################
+
+-- Query to SELECT all town-shop associations with relevant names
+SELECT Town_Shops.Towns_TownID, Towns.TownName AS Town, Town_Shops.Shops_ShopID, Shops.ShopName AS Shop
+FROM Town_Shops
+JOIN Towns ON Town_Shops.Towns_TownID = Towns.TownID
+JOIN Shops ON Town_Shops.Shops_ShopID = Shops.ShopID;
+
+-- dissasociate a town from a shop (M:M)
+DELETE FROM Town_Shops WHERE
+TownID = :town_id_selected_from_town_list AND
+ShopID = :shop_id_selected_from_shop_list;
+
+-- associate a town with a shop (M:M)
+INSERT INTO Town_Shops (Towns_TownID, Shops_ShopID) VALUES
+(:town_id_from_dropdown_input, :shop_id_from_dropdown_input);

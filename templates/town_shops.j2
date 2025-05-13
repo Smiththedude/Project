@@ -1,0 +1,44 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h1>Town_Shops</h1>
+
+{# READ table #}
+<table>
+    <thead>
+        {# For the table header row, we print the DB attribute names #}
+        <tr>
+            {% for key in town_shops[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+
+    <tbody>
+        {# For each row, print the townid, town, shopid, and shop #}
+        {% for town_shop in town_shops %}
+        <tr>
+            <td>{{ town_shop.Towns_TownID }}</td>
+            <td>{{ town_shop.Town }}</td>
+            <td>{{ town_shop.Shops_ShopID }}</td>
+            <td>{{ town_shop.Shop }}</td>
+
+            {# DELETE form #}
+            <form id="delete_town_shop_form">
+                <input type="hidden" name="delete_town_id" value="{{ town_shop.Towns_TownID }}">
+                <input type="hidden" name="delete_town_name" value="{{ town_shop.Town }}">
+                <input type="hidden" name="delete_shop_id" value="{{ town_shop.Shops_ShopID }}">
+                <input type="hidden" name="delete_shop_name" value="{{ town_shop.Shop }}">
+                <td>
+                    <button type="submit">
+                        Delete
+                    </button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}

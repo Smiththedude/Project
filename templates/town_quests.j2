@@ -1,0 +1,44 @@
+{% extends "main.j2" %}
+{% block content %}
+
+<h1>Town_Quests</h1>
+
+{# READ table #}
+<table>
+    <thead>
+        {# For the table header row, we print the DB attribute names #}
+        <tr>
+            {% for key in town_quests[0].keys() %}
+            <th>{{ key }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+
+    <tbody>
+        {# For each row, print the townid, town, questid, and quest #}
+        {% for town_quest in town_quests %}
+        <tr>
+            <td>{{ town_quest.Towns_TownID }}</td>
+            <td>{{ town_quest.Town }}</td>
+            <td>{{ town_quest.Quests_QuestID }}</td>
+            <td>{{ town_quest.Quest }}</td>
+
+            {# DELETE form #}
+            <form id="delete_town_quest_form">
+                <input type="hidden" name="delete_town_id" value="{{ town_quest.Towns_TownID }}">
+                <input type="hidden" name="delete_town_name" value="{{ town_quest.Town }}">
+                <input type="hidden" name="delete_quest_id" value="{{ town_quest.Quests_QuestID }}">
+                <input type="hidden" name="delete_quest_name" value="{{ town_quest.Quest }}">
+                <td>
+                    <button type="submit">
+                        Delete
+                    </button>
+                </td>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+{% endblock %}
