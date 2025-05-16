@@ -1,9 +1,9 @@
 --OSU CS340 Project
 -- DnD Towns/Quests Database
 -- PL/SQL to drop procedure
-DROP PROCEDURE IF EXISTS `sp_load_townsdb`;
+DROP PROCEDURE IF EXISTS sp_load_townsdb;
 DELIMITER //
-CREATE PROCEDURE `sp_load_townsdb`()
+CREATE PROCEDURE sp_load_townsdb()
 BEGIN
   -- Drop the database if it exists
   -- Create database if not exisiting
@@ -159,5 +159,5 @@ BEGIN
 END //
 DELIMITER ;
 -- Call the procedure to load/reset the database
--- CALL `sp_load_townsdb`();
+-- CALL sp_load_townsdb();
 COMMIT;
