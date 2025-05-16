@@ -93,7 +93,7 @@ BEGIN
   CREATE TABLE `Town_Shops` (
     `Towns_TownID` int(11) NOT NULL,                          /* Town ID */
     `Shops_ShopID` int(11) NOT NULL,                          /* Shop ID */
-    PRIMARY KEY (`Towns_TownID`,`Shops_ShopID`) INT NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (`Towns_TownID`,`Shops_ShopID`),
     KEY `fk_Towns_has_Shops_Shops1_idx` (`Shops_ShopID`),
     KEY `fk_Towns_has_Shops_Towns_idx` (`Towns_TownID`),
     CONSTRAINT `fk_Towns_has_Shops_Shops1` FOREIGN KEY (`Shops_ShopID`) REFERENCES `Shops` (`ShopID`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -144,7 +144,7 @@ BEGIN
   CREATE TABLE `Town_Quests` (
     `Towns_TownID` int(11) NOT NULL,
     `Quests_QuestID` int(11) NOT NULL,
-    PRIMARY KEY (`Towns_TownID`,`Quests_QuestID`) INT NOT NULL AUTO_INCREMENT,
+    PRIMARY KEY (`Towns_TownID`,`Quests_QuestID`),
     KEY `Town_Quests_Quests_idx` (`Quests_QuestID`),
     CONSTRAINT `Town_Quests_Quests` FOREIGN KEY (`Quests_QuestID`) REFERENCES `Quests` (`QuestID`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `Town_Quests_Towns` FOREIGN KEY (`Towns_TownID`) REFERENCES `Towns` (`TownID`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -160,4 +160,3 @@ END //
 DELIMITER ;
 -- Call the procedure to load/reset the database
 -- CALL sp_load_townsdb();
-COMMIT;
