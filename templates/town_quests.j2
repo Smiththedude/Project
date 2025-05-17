@@ -24,7 +24,7 @@
             <td>{{ town_quest.Quest }}</td>
 
             {# DELETE form #}
-            <form id="delete_town_quest_form">
+            <form id="delete_town_quest_form" method="POST" action="/delete_town_quest" onsubmit="return confirm('Are you sure you want to delete this Town-Quest relationship?');">
                 <input type="hidden" name="delete_town_id" value="{{ town_quest.Towns_TownID }}">
                 <input type="hidden" name="delete_town_name" value="{{ town_quest.Town }}">
                 <input type="hidden" name="delete_quest_id" value="{{ town_quest.Quests_QuestID }}">

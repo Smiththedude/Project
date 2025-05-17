@@ -189,6 +189,203 @@ def db_pois():
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
 
+# Route for reset button
+@app.route('/reset', methods=['POST'])
+def reset_database():
+    try:
+        dbConnection = db.connectDB()  # Open the database connection
+        
+        # Create CALL query for the stored procedure
+        query = "CALL sp_load_townsdb();"
+        
+        # Execute the query
+        db.query(dbConnection, query)
+        
+        # Commit changes
+        dbConnection.commit()
+        
+        # Redirect back to the home page
+        return redirect("/")
+        
+    except Exception as e:
+        print(f"Error resetting database: {e}")
+        return f"An error occurred while resetting the database: {e}", 500
+        
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+# Routes for deleting
+@app.route('/delete_poi', methods=['POST'])
+def delete_poi():
+    try:
+        dbConnection = db.connectDB()  # Open the database connection
+        
+        # Get the POI ID from the form
+        poi_id = request.form.get('delete_poi_id')
+        
+        # Create DELETE query
+        query = f"DELETE FROM Points_of_Interest WHERE POIID = {poi_id};"
+        
+        # Execute the query
+        db.query(dbConnection, query)
+        
+        # Commit changes
+        dbConnection.commit()
+        
+        # Redirect back to the POI page
+        return redirect("/poi")
+        
+    except Exception as e:
+        print(f"Error deleting POI: {e}")
+        return f"An error occurred while deleting the point of interest: {e}", 500
+        
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+@app.route('/delete_quest', methods=['POST'])
+def delete_quest():
+    try:
+        dbConnection = db.connectDB()  # Open the database connection
+        
+        # Get the Quest ID from the form
+        quest_id = request.form.get('delete_quest_id')
+        
+        # Create DELETE query
+        query = f"DELETE FROM Quests WHERE QuestID = {quest_id};"
+        
+        # Execute the query
+        db.query(dbConnection, query)
+        
+        # Commit changes
+        dbConnection.commit()
+        
+        # Redirect back to the Quests page
+        return redirect("/quests")
+        
+    except Exception as e:
+        print(f"Error deleting Quest: {e}")
+        return f"An error occurred while deleting the quest: {e}", 500
+        
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+@app.route('/delete_shop', methods=['POST'])
+def delete_shop():
+    try:
+        dbConnection = db.connectDB()  # Open the database connection
+        
+        # Get the Shop ID from the form
+        shop_id = request.form.get('delete_shop_id')
+        
+        # Create DELETE query
+        query = f"DELETE FROM Shops WHERE ShopID = {shop_id};"
+        
+        # Execute the query
+        db.query(dbConnection, query)
+        
+        # Commit changes
+        dbConnection.commit()
+        
+        # Redirect back to the Shops page
+        return redirect("/shops")
+        
+    except Exception as e:
+        print(f"Error deleting Shop: {e}")
+        return f"An error occurred while deleting the shop: {e}", 500
+        
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+@app.route('/delete_town', methods=['POST'])
+def delete_town():
+    try:
+        dbConnection = db.connectDB()  # Open the database connection
+        
+        # Get the Town ID from the form
+        town_id = request.form.get('delete_town_id')
+        
+        # Create DELETE query
+        query = f"DELETE FROM Towns WHERE TownID = {town_id};"
+        
+        # Execute the query
+        db.query(dbConnection, query)
+        
+        # Commit changes
+        dbConnection.commit()
+        
+        # Redirect back to the Towns page
+        return redirect("/Towns")
+        
+    except Exception as e:
+        print(f"Error deleting Town: {e}")
+        return f"An error occurred while deleting the town: {e}", 500
+        
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+@app.route('/delete_town_quest', methods=['POST'])
+def delete_town_quest():
+    try:
+        dbConnection = db.connectDB()  # Open the database connection
+        
+        # Get the Town ID and Quest ID from the form
+        town_id = request.form.get('delete_town_id')
+        quest_id = request.form.get('delete_quest_id')
+        
+        # Create DELETE query - here we need both IDs since this is an intersection table
+        query = f"DELETE FROM Town_Quests WHERE Towns_TownID = {town_id} AND Quests_QuestID = {quest_id};"
+        
+        # Execute the query
+        db.query(dbConnection, query)
+        
+        # Commit changes
+        dbConnection.commit()
+        
+        # Redirect back to the Town_Quests page
+        return redirect("/town_quests")
+        
+    except Exception as e:
+        print(f"Error deleting Town-Quest relationship: {e}")
+        return f"An error occurred while deleting the town-quest relationship: {e}", 500
+        
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+@app.route('/delete_town_shop', methods=['POST'])
+def delete_town_shop():
+    try:
+        dbConnection = db.connectDB()  # Open the database connection
+        
+        # Get the Town ID and Shop ID from the form
+        town_id = request.form.get('delete_town_id')
+        shop_id = request.form.get('delete_shop_id')
+        
+        # Create DELETE query - here we need both IDs since this is an intersection table
+        query = f"DELETE FROM Town_Shops WHERE Towns_TownID = {town_id} AND Shops_ShopID = {shop_id};"
+        
+        # Execute the query
+        db.query(dbConnection, query)
+        
+        # Commit changes
+        dbConnection.commit()
+        
+        # Redirect back to the Town_Shops page
+        return redirect("/town_shops")
+        
+    except Exception as e:
+        print(f"Error deleting Town-Shop relationship: {e}")
+        return f"An error occurred while deleting the town-shop relationship: {e}", 500
+        
+    finally:
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
 # ########################################
 # ########## LISTENER
 

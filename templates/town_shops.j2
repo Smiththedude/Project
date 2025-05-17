@@ -24,7 +24,7 @@
             <td>{{ town_shop.Shop }}</td>
 
             {# DELETE form #}
-            <form id="delete_town_shop_form">
+            <form id="delete_town_shop_form" method="POST" action="/delete_town_shop" onsubmit="return confirm('Are you sure you want to delete this Town-Shop relationship?');">
                 <input type="hidden" name="delete_town_id" value="{{ town_shop.Towns_TownID }}">
                 <input type="hidden" name="delete_town_name" value="{{ town_shop.Town }}">
                 <input type="hidden" name="delete_shop_id" value="{{ town_shop.Shops_ShopID }}">

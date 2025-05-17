@@ -22,7 +22,17 @@
             <td>{{ town.TownName }}</td>
             <td>{{ town.Region }}</td>
             <td>{{ town.Alignment | default('', true) }}</td>
-        </tr>
+            {# DELETE form #}
+            <form id="delete_town_form" method="POST" action="/delete_town" onsubmit="return confirm('Are you sure you want to delete this Town?');">
+            <input type="hidden" name="delete_town_id" value="{{ town.TownID }}">
+            <input type="hidden" name="delete_town_name" value="{{ town.TownName }}">
+            <td>
+            <button type="submit">
+                Delete
+            </button>
+        </td>
+    </form>
+</tr>
         {% endfor %}
     </tbody>
 </table>

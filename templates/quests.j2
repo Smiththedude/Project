@@ -28,7 +28,7 @@
             <td>{{ quest.QuestDiff }}</td>
 
             {# DELETE form #}
-            <form id="delete_quest_form">
+            <form id="delete_quest_form" method="POST" action="/delete_quest" onsubmit="return confirm('Are you sure you want to delete this Quest?');">
                 <input type="hidden" name="delete_quest_id" value="{{ quest.QuestID }}">
                 <input type="hidden" name="delete_quest_name" value="{{ quest.QuestName }}">
                 <td>
