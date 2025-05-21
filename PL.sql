@@ -1,0 +1,2 @@
+-- PL/SQL File
+-- We have not implemented any PL/SQL blocks yet. Our current DELETE operation works through our j2 files in templates and our routes in app.py
