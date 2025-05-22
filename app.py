@@ -4,14 +4,15 @@
 from flask import Flask, render_template, request, redirect
 import database.db_connector as db
 
-PORT = 58009
+PORT = 58585
 
 app = Flask(__name__)
 
 # ########################################
 # ########## ROUTE HANDLERS
 
-# READ ROUTES
+# ########################################
+# #####READ ROUTES
 @app.route("/", methods=["GET"])
 def home():
     try:
@@ -71,49 +72,6 @@ def db_towns():
     except Exception as e:
         print(f"Error retrieving towns: {e}")
         return f"An error occurred while executing the database queries: {e}", 500
-
-    finally:
-        # Close the DB connection, if it exists
-        if "dbConnection" in locals() and dbConnection:
-            dbConnection.close()
-
-@app.route("/Towns/create", methods=["POST"])
-def create_town():
-    try:
-        dbConnection = db.connectDB()  # Open our database connection
-        cursor = dbConnection.cursor()
-
-        # Get form data
-        tname = request.form["create_town_name"]
-        tregion = request.form["create_town_region"]
-        talign = request.form["create_town_alignment"]
-
-        # Create and execute our queries
-        # Using parameterized queries (Prevents SQL injection attacks)
-        query1 = "CALL sp_create_town(%s, %s, %s, @new_t_id);"
-        cursor.execute(query1, (tname, tregion, talign))
-
-        cursor.nextset()  # Move to the next result set (for CALL statements)
-
-        # Fetch the result of the stored procedure
-        cursor.execute("SELECT @new_t_id;")  # Get the last inserted ID
-        result = cursor.fetchone()
-        new_t_id = result[0] if result else None
-
-        dbConnection.commit()  # commit the transaction
-
-        
-        print(f"CREATE Town. ID: {new_t_id} Name: {tname}")
-
-        # Redirect the user to the updated webpage
-        return redirect("/Towns")
-
-    except Exception as e:
-        print(f"Error executing queries: {e}")
-        return (
-            "An error occurred while executing the database queries.",
-            500,
-        )
 
     finally:
         # Close the DB connection, if it exists
@@ -232,7 +190,8 @@ def db_pois():
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
 
-# Route for reset button
+# ########################################
+# #####RESET ROUTE
 @app.route('/reset', methods=['POST'])
 def reset_database():
     try:
@@ -258,7 +217,104 @@ def reset_database():
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
 
-# Routes for deleting
+# ########################################
+# #####CREATE ROUTES
+
+@app.route("/Towns/create", methods=["POST"])
+def create_town():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        # Get form data
+        tname = request.form["create_town_name"]
+        tregion = request.form["create_town_region"]
+        talign = request.form["create_town_alignment"]
+
+        # Create and execute our queries
+        # Using parameterized queries (Prevents SQL injection attacks)
+        query1 = "CALL sp_create_town(%s, %s, %s, @new_t_id);"
+        cursor.execute(query1, (tname, tregion, talign))
+
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        # Fetch the result of the stored procedure
+        cursor.execute("SELECT @new_t_id;")  # Get the last inserted ID
+        result = cursor.fetchone()
+        new_t_id = result[0] if result else None
+
+        dbConnection.commit()  # commit the transaction
+
+        
+        print(f"CREATE Town. ID: {new_t_id} Name: {tname}")
+
+        # Redirect the user to the updated webpage
+        return redirect("/Towns")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+
+# ########################################
+# #####UPDATE ROUTES
+
+@app.route("/Towns/update", methods=["POST"])
+def update_alignment():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        # Get form data
+        t_id = request.form["update_town_id"]
+
+        # Cleanse data - If the homeworld or age aren't numbers, make them NULL.
+        try:
+            alignment = request.form["update_town_alignment"]
+        except ValueError:
+            alignment = None
+
+        # Create and execute our queries
+        # Using parameterized queries (Prevents SQL injection attacks)
+        query1 = "CALL sp_update_town_alignment(%s, %s);"
+        cursor.execute(query1, (t_id, alignment))
+
+        # Consume the result set (if any) before running the next query
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        dbConnection.commit()  # commit the transaction
+
+        query2 = "SELECT Alignment FROM Towns WHERE TownID = %s;"
+        cursor.execute(query2, (t_id))
+        rows = cursor.fetchone()  # Fetch name info on updated person
+
+        print(f"UPDATE Towns. ID: {t_id} Alignment: {rows[0]}")
+
+        # Redirect the user to the updated webpage
+        return redirect("/Towns")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+# ########################################
+# #####DELETE ROUTES
 @app.route('/delete_poi', methods=['POST'])
 def delete_poi():
     try:

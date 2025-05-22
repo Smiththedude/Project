@@ -53,8 +53,8 @@
 </form>
 
 {# UPDATE form #}
-<h2>Update a Town</h2>
-<form class="cuForm" id="update_town_form">
+<h2>Change Town Alignment</h2>
+<form class="cuForm" id="update_town_form" method="POST" action="/Towns/update">
     <label for="update_town_id">Town to Update: </label>
     <select name="update_town_id" id="update_town_id" required>
         <option value="" disabled selected>Select a Town</option>
@@ -64,9 +64,6 @@
         </option>
         {% endfor %}
     </select>
-
-    <label for="update_town_region">New Region: </label>
-    <input type="text" name="update_town_region" id="update_town_region">
 
     <label for="update_town_alignment">New Alignment: </label>
     <input type="text" name="update_town_alignment" id="update_town_alignment">

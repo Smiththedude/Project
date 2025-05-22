@@ -30,3 +30,24 @@ BEGIN
 END //
 DELIMITER ;
 
+-- #####################
+-- Update Town Alignment
+-- #####################
+
+DROP PROCEDURE IF EXISTS sp_update_town_alignment;
+
+DELIMITER //
+CREATE PROCEDURE sp_update_town_alignment(
+    IN t_id INT,
+    IN new_alignment VARCHAR(50)
+)
+BEGIN
+    -- Update the alignment of the specified town
+    UPDATE Towns
+    SET Alignment = new_alignment
+    WHERE TownID = t_id;
+
+    -- Example procedure call
+    -- CALL sp_update_town_alignment(1, 'CG');
+END //
+DELIMITER ;
