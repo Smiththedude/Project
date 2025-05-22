@@ -1,4 +1,4 @@
---OSU CS340 Project
+-- OSU CS340 Project
 -- DnD Towns/Quests Database
 -- PL/SQL to drop procedure
 DROP PROCEDURE IF EXISTS sp_load_townsdb;
