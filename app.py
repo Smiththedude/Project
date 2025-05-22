@@ -77,6 +77,49 @@ def db_towns():
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
 
+@app.route("/Towns/create", methods=["POST"])
+def create_town():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        # Get form data
+        tname = request.form["create_town_name"]
+        tregion = request.form["create_town_region"]
+        talign = request.form["create_town_alignment"]
+
+        # Create and execute our queries
+        # Using parameterized queries (Prevents SQL injection attacks)
+        query1 = "CALL sp_create_town(%s, %s, %s, @new_t_id);"
+        cursor.execute(query1, (tname, tregion, talign))
+
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        # Fetch the result of the stored procedure
+        cursor.execute("SELECT @new_t_id;")  # Get the last inserted ID
+        result = cursor.fetchone()
+        new_t_id = result[0] if result else None
+
+        dbConnection.commit()  # commit the transaction
+
+        
+        print(f"CREATE Town. ID: {new_t_id} Name: {tname}")
+
+        # Redirect the user to the updated webpage
+        return redirect("/Towns")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
 @app.route("/shops", methods=["GET"])
 def db_shops():
     try:
