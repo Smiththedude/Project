@@ -40,5 +40,36 @@
     </tbody>
 </table>
 
+{# CREATE form for town_quests #}
+<h2>Create a Town-Quest Relationship</h2>
+<form class="cuForm" id="create_town_quest_form" method="POST" action="/create_town_quest">
+        <label for="create_town_quests_town">Town Name: </label>
+    <input type="text" name="create_town_quests_town" id="create_town_quests_town" required>
+
+    <label for="create_town_quests_quest">Quest Name: </label>
+    <input type="text" name="create_town_quests_quest" id="create_town_quests_quest" required>
+
+    <input type="submit" value="Create Relationship">
+</form>
+
+
+{# UPDATE form for town_quests #}
+<h2>Update a Town-Quest Relationship</h2>
+<form class="cuForm" id="update_town_quest_form" method="POST" action="/update_town_quest">
+    <label for="original_town_quest">Relationship to Update: </label>
+    <select name="original_town_quest" id="original_town_quest" required>
+        <option value="" disabled selected>Select a Town-Quest Relationship</option>
+        {% for town_quest in town_quests %}
+        <option value="{{ town_quest.Towns_TownID }},{{ town_quest.Quests_QuestID }}">
+            Town: {{ town_quest.Town }} - Quest: {{ town_quest.Quest }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label for="update_town_quests_town">Updated Town: </label>
+    <input type="text" name="update_town_quests_town" id="update_town_quests_town" required>
+
+    <label for="update_town_quests_quest">Updated Quest: </label>
+    <input type="text" name="update_town_quests_quest" id="update_town_quests_quest" required>
 
 {% endblock %}
