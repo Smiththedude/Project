@@ -42,20 +42,30 @@
 
 {# CREATE form for town_quests #}
 <h2>Create a Town-Quest Relationship</h2>
-<form class="cuForm" id="create_town_quest_form" method="POST" action="/create_town_quest">
-        <label for="create_town_quests_town">Town Name: </label>
-    <input type="text" name="create_town_quests_town" id="create_town_quests_town" required>
+<form class="cuForm" id="create_town_quest_form" method="POST" action="/town_quests/create">
+    
+    <label for="town_id">Select a Town:</label>
+    <select name="town_id" id="town_id" required>
+        <option value="" disabled selected>Select a Town</option>
+        {% for town in towns %}
+        <option value="{{ town.TownID }}">{{ town.TownID }} - {{ town.TownName }}</option>
+        {% endfor %}
+    </select>
 
-    <label for="create_town_quests_quest">Quest Name: </label>
-    <input type="text" name="create_town_quests_quest" id="create_town_quests_quest" required>
+    <label for="quest_id">Select a Quest:</label>
+    <select name="quest_id" id="quest_id" required>
+        <option value="" disabled selected>Select a Quest</option>
+        {% for quest in quests %}
+        <option value="{{ quest.QuestID }}">{{ quest.QuestID }} - {{ quest.QuestName }}</option>
+        {% endfor %}
+    </select>
 
     <input type="submit" value="Create Relationship">
 </form>
 
-
 {# UPDATE form for town_quests #}
 <h2>Update a Town-Quest Relationship</h2>
-<form class="cuForm" id="update_town_quest_form" method="POST" action="/update_town_quest">
+<form class="cuForm" id="update_town_quest_form" method="POST" action="/town_quests/update">
     <label for="original_town_quest">Relationship to Update: </label>
     <select name="original_town_quest" id="original_town_quest" required>
         <option value="" disabled selected>Select a Town-Quest Relationship</option>
@@ -66,10 +76,23 @@
         {% endfor %}
     </select>
 
-    <label for="update_town_quests_town">Updated Town: </label>
-    <input type="text" name="update_town_quests_town" id="update_town_quests_town" required>
+    <label for="town_id">Updated Town:</label>
+    <select name="town_id" id="town_id" required>
+        <option value="" disabled selected>Select a Town</option>
+        {% for town in towns %}
+        <option value="{{ town.TownID }}">{{ town.TownID }} - {{ town.TownName }}</option>
+        {% endfor %}
+    </select>
 
-    <label for="update_town_quests_quest">Updated Quest: </label>
-    <input type="text" name="update_town_quests_quest" id="update_town_quests_quest" required>
+    <label for="quest_id">Updated Quest:</label>
+    <select name="quest_id" id="quest_id" required>
+        <option value="" disabled selected>Select a Quest</option>
+        {% for quest in quests %}
+        <option value="{{ quest.QuestID }}">{{ quest.QuestID }} - {{ quest.QuestName }}</option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Update Relationship">
+</form>
 
 {% endblock %}

@@ -4,7 +4,7 @@
 from flask import Flask, render_template, request, redirect
 import database.db_connector as db
 
-PORT = 58585
+PORT = 58586
 
 app = Flask(__name__)
 
@@ -133,8 +133,16 @@ def db_town_quests():
             ORDER BY Town_Quests.Towns_TownID ASC;"
         town_quests = db.query(dbConnection, query).fetchall()
 
+        # Get all towns
+        query2 = "SELECT TownID, TownName FROM Towns"
+        towns = db.query(dbConnection, query2).fetchall()
+
+        # Get all quests
+        query3 = "SELECT QuestID, QuestName FROM Quests"
+        quests = db.query(dbConnection, query3).fetchall()
+
         # Render the town_quests.j2 file and pass the town_quests data
-        return render_template("town_quests.j2", town_quests=town_quests)
+        return render_template("town_quests.j2", town_quests=town_quests, towns=towns, quests=quests)
 
     except Exception as e:
         print(f"Error retrieving quests: {e}")
@@ -263,6 +271,42 @@ def create_town():
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
 
+@app.route('/town_quests/create', methods=['POST'])
+def create_town_quest():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        t_id = int(request.form["town_id"])
+        q_id = int(request.form["quest_id"])
+
+        query1 = "CALL sp_add_town_quest(%s, %s, @msg);"
+        cursor.execute(query1, (t_id, q_id))
+
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        # Fetch the result of the stored procedure
+        cursor.execute("SELECT @msg;")  # Get the last inserted ID
+        result = cursor.fetchone()
+        msg = result[0] if result else None
+
+        dbConnection.commit()
+
+        print(f"CREATE Town_Quest. TownID: {t_id} QuestID: {q_id} Message: {msg}")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+    
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+    return redirect("/town_quests")
 
 # ########################################
 # #####UPDATE ROUTES
@@ -275,12 +319,7 @@ def update_alignment():
 
         # Get form data
         t_id = request.form["update_town_id"]
-
-        # Cleanse data - If the homeworld or age aren't numbers, make them NULL.
-        try:
-            alignment = request.form["update_town_alignment"]
-        except ValueError:
-            alignment = None
+        alignment = request.form["update_town_alignment"]
 
         # Create and execute our queries
         # Using parameterized queries (Prevents SQL injection attacks)
@@ -300,6 +339,50 @@ def update_alignment():
 
         # Redirect the user to the updated webpage
         return redirect("/Towns")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+@app.route("/town_quests/update", methods=["POST"])
+def update_town_quest():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        # Get form data
+        old_rel = request.form["original_town_quest"]
+        old_t_id, old_q_id = map(int, old_rel.split(","))
+        t_id = request.form["town_id"]
+        q_id = request.form["quest_id"]
+
+        # Create and execute our queries
+        # Using parameterized queries (Prevents SQL injection attacks)
+        query1 = "CALL sp_update_town_quest(%s, %s, %s, %s, @msg);"
+        cursor.execute(query1, (old_t_id, old_q_id, t_id, q_id))
+
+        # Consume the result set (if any) before running the next query
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        cursor.execute("SELECT @msg;")  # Get informational output from procedure
+        result = cursor.fetchone()[0]
+
+        dbConnection.commit()  # commit the transaction
+
+        print(f"Old TownID: {old_t_id} Old QuestID: {old_q_id}") 
+        print(f"New TownID: {t_id} New QuestID: {q_id}")
+        print(f"Message: {result}")
+
+        # Redirect the user to the updated webpage
+        return redirect("/town_quests")
 
     except Exception as e:
         print(f"Error executing queries: {e}")
