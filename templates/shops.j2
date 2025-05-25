@@ -41,15 +41,15 @@
 
 {# CREATE form #}
 <h2>Create a Shop</h2>
-<form class="cuForm" id="create_shop_form">
+<form class="cuForm" id="create_shop_form" method="POST" action="/shops/create">
     <label for="create_shop_name">Shop Name: </label>
     <input type="text" name="create_shop_name" id="create_shop_name" required>
 
-    <label for="create_shop_location">Location: </label>
-    <input type="text" name="create_shop_location" id="create_shop_location" required>
-
     <label for="create_shop_owner">Owner: </label>
-    <input type="text" name="create_shop_owner" id="create_shop_owner">
+    <input type="text" name="create_shop_owner" id="create_shop_owner" required>
+
+    <label for="create_shop_type">Type: </label>
+    <input type="text" name="create_shop_type" id="create_shop_type">
 
     <input type="submit">
 </form>

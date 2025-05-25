@@ -30,6 +30,36 @@ BEGIN
 END //
 DELIMITER ;
 
+-- ###########
+-- CREATE Shop
+-- ###########
+
+DROP PROCEDURE IF EXISTS sp_create_shop;
+
+DELIMITER //
+CREATE PROCEDURE sp_create_shop(
+    IN shop_name VARCHAR(50),
+    IN shop_owner VARCHAR(50),
+    IN shop_type VARCHAR(50),
+    OUT new_s_id INT
+)
+
+BEGIN
+    -- Insert the new town into the Towns table
+    INSERT INTO Shops (ShopName, ShopOwner, ShopType)
+    VALUES (shop_name, shop_owner, shop_type);
+
+    -- Get the ID of the newly created town
+    SELECT LAST_INSERT_ID() INTO new_s_id;
+    -- Display the ID of the newly created town
+    SELECT LAST_INSERT_ID() AS 'new_s_id';
+
+    -- Example procedure call
+    -- CALL sp_create_town('Icewind Dale', 'Sword Coast', 'LG', @t_id);
+    -- SELECT @t_id AS 'TownID';
+END //
+DELIMITER ;
+
 -- #####################
 -- Update Town Alignment
 -- #####################

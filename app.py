@@ -4,7 +4,7 @@
 from flask import Flask, render_template, request, redirect
 import database.db_connector as db
 
-PORT = 58586
+PORT = 68574
 
 app = Flask(__name__)
 
@@ -258,6 +258,50 @@ def create_town():
 
         # Redirect the user to the updated webpage
         return redirect("/Towns")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+
+@app.route("/shops/create", methods=["POST"])
+def create_shop():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        # Get form data
+        shopname = request.form["create_shop_name"]
+        shopowner = request.form["create_shop_owner"]
+        shoptype = request.form["create_shop_type"]
+
+        # Create and execute our queries
+        # Using parameterized queries (Prevents SQL injection attacks)
+        query1 = "CALL sp_create_shop(%s, %s, %s, @new_s_id);"
+        cursor.execute(query1, (shopname, shopowner, shoptype))
+
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        # Fetch the result of the stored procedure
+        cursor.execute("SELECT @new_s_id;")  # Get the last inserted ID
+        result = cursor.fetchone()
+        new_s_id = result[0] if result else None
+
+        dbConnection.commit()  # commit the transaction
+
+        
+        print(f"CREATE Shop. ID: {new_s_id} Name: {shopname}")
+
+        # Redirect the user to the updated webpage
+        return redirect("/shops")
 
     except Exception as e:
         print(f"Error executing queries: {e}")
