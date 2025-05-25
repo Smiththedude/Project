@@ -377,12 +377,55 @@ def update_alignment():
 
         query2 = "SELECT Alignment FROM Towns WHERE TownID = %s;"
         cursor.execute(query2, (t_id))
-        rows = cursor.fetchone()  # Fetch name info on updated person
+        rows = cursor.fetchone()  # Fetch alignment info on updated town
 
         print(f"UPDATE Towns. ID: {t_id} Alignment: {rows[0]}")
 
         # Redirect the user to the updated webpage
         return redirect("/Towns")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+@app.route("/shops/update", methods=["POST"])
+def update_shop():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        # Get form data
+        s_id = request.form["update_shop_id"]
+        shopname = request.form["update_shop_name"]
+        shopowner = request.form["update_shop_owner"]
+        shoptype = request.form["update_shop_type"]
+
+        # Create and execute our queries
+        # Using parameterized queries (Prevents SQL injection attacks)
+        query1 = "CALL sp_update_shop(%s, %s, %s, %s, @msg);"
+        cursor.execute(query1, (s_id, shopname, shopowner, shoptype))
+
+        # Consume the result set (if any) before running the next query
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        dbConnection.commit()  # commit the transaction
+
+        query2 = "SELECT ShopName FROM Shops WHERE ShopID = %s;"
+        cursor.execute(query2, (s_id))
+        rows = cursor.fetchone()  # Fetch name info on updated shop
+
+        print(f"UPDATE Shops. ID: {s_id} Name: {shopname} Owner: {shopowner} Type: {shoptype}")
+
+        # Redirect the user to the updated webpage
+        return redirect("/shops")
 
     except Exception as e:
         print(f"Error executing queries: {e}")

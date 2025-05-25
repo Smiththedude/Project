@@ -1,7 +1,7 @@
 USE cs340_smithaa5;
 
 -- ###########
--- CREATE Town
+-- CREATE TOWN
 -- ###########
 
 DROP PROCEDURE IF EXISTS sp_create_town;
@@ -31,7 +31,7 @@ END //
 DELIMITER ;
 
 -- ###########
--- CREATE Shop
+-- CREATE SHOP
 -- ###########
 
 DROP PROCEDURE IF EXISTS sp_create_shop;
@@ -45,42 +45,21 @@ CREATE PROCEDURE sp_create_shop(
 )
 
 BEGIN
-    -- Insert the new town into the Towns table
+    -- Insert the new shop into the Shops table
     INSERT INTO Shops (ShopName, ShopOwner, ShopType)
     VALUES (shop_name, shop_owner, shop_type);
 
-    -- Get the ID of the newly created town
+    -- Get the ID of the newly created shop
     SELECT LAST_INSERT_ID() INTO new_s_id;
-    -- Display the ID of the newly created town
+    -- Display the ID of the newly created shop
     SELECT LAST_INSERT_ID() AS 'new_s_id';
 
     -- Example procedure call
-    -- CALL sp_create_town('Icewind Dale', 'Sword Coast', 'LG', @t_id);
-    -- SELECT @t_id AS 'TownID';
+    -- CALL sp_create_shop('Grog''s Grogs', 'Grog', 'Tavern', @new_s_id);
+    -- SELECT @new_s_id AS 'ShopID';
 END //
 DELIMITER ;
 
--- #####################
--- Update Town Alignment
--- #####################
-
-DROP PROCEDURE IF EXISTS sp_update_town_alignment;
-
-DELIMITER //
-CREATE PROCEDURE sp_update_town_alignment(
-    IN t_id INT,
-    IN new_alignment VARCHAR(50)
-)
-BEGIN
-    -- Update the alignment of the specified town
-    UPDATE Towns
-    SET Alignment = new_alignment
-    WHERE TownID = t_id;
-
-    -- Example procedure call
-    -- CALL sp_update_town_alignment(1, 'CG');
-END //
-DELIMITER ;
 
 -- ##############################
 -- CREATE TOWN-QUEST RELATIONSHIP
@@ -111,6 +90,71 @@ BEGIN
     END IF;
 END //
 
+DELIMITER ;
+
+-- #####################
+-- UPDATE TOWN ALIGNMENT
+-- #####################
+
+DROP PROCEDURE IF EXISTS sp_update_town_alignment;
+
+DELIMITER //
+CREATE PROCEDURE sp_update_town_alignment(
+    IN t_id INT,
+    IN new_alignment VARCHAR(50)
+)
+BEGIN
+    -- Update the alignment of the specified town
+    UPDATE Towns
+    SET Alignment = new_alignment
+    WHERE TownID = t_id;
+
+    -- Example procedure call
+    -- CALL sp_update_town_alignment(1, 'CG');
+END //
+DELIMITER ;
+
+-- ###########
+-- UPDATE SHOP
+-- ###########
+
+DROP PROCEDURE IF EXISTS sp_update_shop;
+
+DELIMITER //
+CREATE PROCEDURE sp_update_shop(
+    IN s_id INT,
+    IN shop_name VARCHAR(50),
+    IN shop_owner VARCHAR(50),
+    IN shop_type VARCHAR(50),
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    -- Update the name, owner and type of the specified shop
+    -- Only update fields that are not NULL (none are required)
+    IF shop_name IS NOT NULL AND shop_name != '' THEN
+        UPDATE Shops
+        SET ShopName = shop_name
+        WHERE ShopID = s_id;
+    END IF;
+
+    IF shop_owner IS NOT NULL AND shop_owner != '' THEN
+        UPDATE Shops
+        SET ShopOwner = shop_owner
+        WHERE ShopID = s_id;
+    END IF;
+
+    IF shop_type IS NOT NULL AND shop_type != '' THEN
+        UPDATE Shops
+        SET ShopType = shop_type
+        WHERE ShopID = s_id;
+    END IF;
+
+    -- Example procedure call
+    -- CALL sp_update_shop(1, 'Grog''s Grogs', 'Grog', 'Tavern');
+    -- SELECT @msg AS 'Message';
+    SET msg = 'Shop updated successfully.';
+    SELECT msg AS 'Message';
+END //
 DELIMITER ;
 
 -- ##############################

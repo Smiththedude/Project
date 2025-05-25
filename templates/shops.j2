@@ -56,7 +56,7 @@
 
 {# UPDATE form #}
 <h2>Update a Shop</h2>
-<form class="cuForm" id="update_shop_form">
+<form class="cuForm" id="update_shop_form" method="POST" action="/shops/update">
     <label for="update_shop_id">Shop to Update: </label>
     <select name="update_shop_id" id="update_shop_id" required>
         <option value="" disabled selected>Select a Shop</option>
@@ -67,11 +67,14 @@
         {% endfor %}
     </select>
 
-    <label for="update_shop_location">Location: </label>
-    <input type="text" name="update_shop_location" id="update_shop_location">
+    <label for="update_shop_name">New Name: </label>
+    <input type="text" name="update_shop_name" id="update_shop_name">
 
-    <label for="update_shop_owner">Owner: </label>
+    <label for="update_shop_owner">New Owner: </label>
     <input type="text" name="update_shop_owner" id="update_shop_owner">
+
+    <label for="update_shop_type">New Type: </label>
+    <input type="text" name="update_shop_type" id="update_shop_type">
 
     <input type="submit">
 </form>
