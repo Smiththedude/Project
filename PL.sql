@@ -200,3 +200,33 @@ BEGIN
 
 END //
 DELIMITER ;
+
+-- ###########
+-- CREATE QUEST
+-- ###########
+
+DROP PROCEDURE IF EXISTS sp_create_quest;
+DELIMITER //
+CREATE PROCEDURE sp_create_quest(
+    IN q_name VARCHAR(50),
+    IN q_giver VARCHAR(50),
+    IN q_desc TEXT,
+    IN q_reward VARCHAR(100),
+    IN q_status VARCHAR(50),
+    IN q_diff INT,
+    IN shop_id INT,
+    IN poi_id INT,
+    OUT q_id INT
+)
+BEGIN
+    -- Insert the new quest into the Quests table
+    INSERT INTO Quests (QuestName, QuestGiver, QuestDesc, QuestReward, QuestStatus, QuestDiff, Shops_ShopID, Points_of_Interest_POIID)
+    VALUES (q_name, q_giver, q_desc, q_reward, q_status, q_diff, shop_id, poi_id);
+
+    -- Get the ID of the newly created quest
+    SELECT LAST_INSERT_ID() INTO q_id;
+    
+    -- Display the ID of the newly created quest
+    SELECT LAST_INSERT_ID() AS 'new_q_id';
+END //
+DELIMITER ;
