@@ -102,19 +102,29 @@ def db_shops():
 @app.route("/quests", methods=["GET"])
 def db_quests():
     try:
-        dbConnection = db.connectDB()  # Open our database connection
-
-        # Query all quests
-        query = "SELECT * FROM Quests;"
-        quests = db.query(dbConnection, query).fetchall()
-
-        # Render the quests.j2 file and pass the quests data
-        return render_template("quests.j2", quests=quests)
-
+        dbConnection = db.connectDB()
+        
+        # Get all quests
+        query = "SELECT * FROM Quests"
+        quests_result = db.query(dbConnection, query)
+        quests = quests_result.fetchall()
+        
+        # Get all shops for dropdown
+        shops_query = "SELECT ShopID, ShopName FROM Shops"
+        shops_result = db.query(dbConnection, shops_query)
+        shops = shops_result.fetchall()
+        
+        # Get all POIs for dropdown
+        pois_query = "SELECT POIID, POI_Name FROM Points_of_Interest"
+        pois_result = db.query(dbConnection, pois_query)
+        pois = pois_result.fetchall()
+        
+        return render_template("quests.j2", quests=quests, shops=shops, pois=pois)
+        
     except Exception as e:
         print(f"Error retrieving quests: {e}")
-        return "An error occurred while retrieving quests.", 500
-
+        return f"An error occurred while retrieving quests: {e}", 500
+        
     finally:
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()

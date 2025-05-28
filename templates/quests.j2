@@ -70,16 +70,26 @@
    <input type="text" name="create_quest_status" id="create_quest_status">
 
 
-   <label for="create_quest_diff">Difficulty (1-10): </label>
+      <label for="create_quest_diff">Difficulty (1-10): </label>
    <input type="number" name="create_quest_diff" id="create_quest_diff" min="1" max="10" required>
 
 
-   <label for="create_shop_id">Shop ID: </label>
-   <input type="number" name="create_shop_id" id="create_shop_id">
+   <label for="create_shop_id">Shop: </label>
+   <select name="create_shop_id" id="create_shop_id">
+       <option value="">Select Shop ID</option>
+       {% for shop in shops %}
+       <option value="{{ shop.ShopID }}">{{ shop.ShopID }} - {{ shop.ShopName }}</option>
+       {% endfor %}
+   </select>
 
 
-   <label for="create_poi_id">POI ID: </label>
-   <input type="number" name="create_poi_id" id="create_poi_id">
+   <label for="create_poi_id">Point of Interest: </label>
+   <select name="create_poi_id" id="create_poi_id">
+       <option value="">Select POI ID</option>
+       {% for poi in pois %}
+       <option value="{{ poi.POIID }}">{{ poi.POIID }} - {{ poi.POIName }}</option>
+       {% endfor %}
+   </select>
 
 
    <input type="submit" value="Create Quest">
