@@ -552,6 +552,49 @@ def update_town_quest():
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
 
+@app.route("/quests/update", methods=["POST"])
+def update_quest():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        # Get form data
+        q_id = request.form["update_quest_id"]
+        status = request.form["update_quest_status"]
+        reward = request.form["update_quest_reward"]
+        difficulty = request.form["update_quest_diff"]
+
+        # Create and execute our queries
+        # Using parameterized queries (Prevents SQL injection attacks)
+        query1 = "CALL sp_update_quest(%s, %s, %s, %s, @msg);"
+        cursor.execute(query1, (q_id, status, reward, difficulty))
+
+        # Consume the result set (if any) before running the next query
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        dbConnection.commit()  # commit the transaction
+
+        query2 = "SELECT QuestStatus, QuestReward, QuestDiff FROM Quests WHERE QuestID = %s;"
+        cursor.execute(query2, (q_id,))  # Added comma to make it a tuple
+        rows = cursor.fetchone()  # Fetch updated quest info
+
+        print(f"UPDATE Quest. ID: {q_id} Status: {rows[0]} Reward: {rows[1]} Difficulty: {rows[2]}")
+
+        # Redirect the user to the updated webpage
+        return redirect("/quests")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
 # ########################################
 # #####DELETE ROUTES
 @app.route('/delete_poi', methods=['POST'])

@@ -98,7 +98,7 @@
 
 {# UPDATE form #}
 <h2>Update a Quest</h2>
-<form class="cuForm" id="update_quest_form">
+<form class="cuForm" id="update_quest_form" method="POST" action="/quests/update">
    <label for="update_quest_id">Quest to Update: </label>
    <select name="update_quest_id" id="update_quest_id" required>
        <option value="" disabled selected>Select a Quest</option>
@@ -109,20 +109,16 @@
        {% endfor %}
    </select>
 
-
    <label for="update_quest_status">Status: </label>
    <input type="text" name="update_quest_status" id="update_quest_status">
-
 
    <label for="update_quest_reward">Reward: </label>
    <input type="text" name="update_quest_reward" id="update_quest_reward">
 
-
    <label for="update_quest_diff">Difficulty: </label>
    <input type="number" name="update_quest_diff" id="update_quest_diff" min="1" max="10">
 
-
-   <input type="submit">
+   <input type="submit" value="Update Quest">
 </form>
 
 
