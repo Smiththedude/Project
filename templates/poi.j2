@@ -38,7 +38,7 @@
 
 {# CREATE form #}
 <h2>Create a Point of Interest</h2>
-<form class="cuForm" id="create_poi_form">
+<form class="cuForm" id="create_poi_form" method="POST" action="/poi/create">
     <label for="create_poi_name">Name: </label>
     <input type="text" name="create_poi_name" id="create_poi_name" required>
 
@@ -51,10 +51,17 @@
     <label for="create_poi_desc">Description: </label>
     <input type="text" name="create_poi_desc" id="create_poi_desc">
 
-    <label for="create_town_id">Town ID: </label>
-    <input type="number" name="create_town_id" id="create_town_id" required>
+    <label for="create_town_id">Town: </label>
+    <select name="create_town_id" id="create_town_id" required>
+        <option value="" disabled selected>Select a Town</option>
+        {% for town in towns %}
+        <option value="{{ town.TownID }}">
+            {{ town.TownID }} - {{ town.TownName }}
+        </option>
+        {% endfor %}
+    </select>
 
-    <input type="submit">
+    <input type="submit" value="Create POI">
 </form>
 
 {# UPDATE form #}

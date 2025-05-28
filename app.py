@@ -189,21 +189,26 @@ def db_town_shops():
 
 
 @app.route("/poi", methods=["GET"])
-def db_pois():
+def db_poi():
     try:
-        dbConnection = db.connectDB()  # Open the database connection
-
-        # Query all points of interest
-        query = "SELECT * FROM Points_of_Interest;"
-        pois = db.query(dbConnection, query).fetchall()
-
-        # Render the points_of_interest.j2 file with POI data
-        return render_template("poi.j2", pois=pois)
-
+        dbConnection = db.connectDB()
+        
+        # Get all POIs
+        query = "SELECT * FROM Points_of_Interest"
+        pois_result = db.query(dbConnection, query)
+        pois = pois_result.fetchall()
+        
+        # Get towns for dropdown menu
+        towns_query = "SELECT TownID, TownName FROM Towns"
+        towns_result = db.query(dbConnection, towns_query)
+        towns = towns_result.fetchall()
+        
+        return render_template("poi.j2", pois=pois, towns=towns)
+        
     except Exception as e:
         print(f"Error retrieving POIs: {e}")
-        return "An error occurred while retrieving points of interest.", 500
-
+        return f"An error occurred while retrieving POIs: {e}", 500
+        
     finally:
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
@@ -414,6 +419,52 @@ def create_quest():
        print(f"Error creating quest: {e}")
        return f"Error creating quest: {e}", 500
 
+
+   finally:
+       # Close the DB connection, if it exists
+       if "dbConnection" in locals() and dbConnection:
+           dbConnection.close()
+
+
+@app.route("/poi/create", methods=["POST"])
+def create_poi():
+   try:
+       dbConnection = db.connectDB()  # Open our database connection
+       cursor = dbConnection.cursor()
+
+       # Get form data
+       poi_name = request.form["create_poi_name"]
+       poi_type = request.form["create_poi_type"]
+       poi_history = request.form["create_poi_history"]
+       poi_desc = request.form["create_poi_desc"]
+       
+       # To check for valid town id
+       town_id = None
+       if request.form["create_town_id"] and request.form["create_town_id"].strip():
+           town_id = int(request.form["create_town_id"])
+
+       # Create and execute our queries
+       # Using parameterized queries (Prevents SQL injection attacks)
+       query1 = "CALL sp_create_poi(%s, %s, %s, %s, %s, @new_poi_id);"
+       cursor.execute(query1, (poi_name, poi_type, poi_history, poi_desc, town_id))
+
+       cursor.nextset()  # Move to the next result set (for CALL statements)
+
+       # Fetch the result of the stored procedure
+       cursor.execute("SELECT @new_poi_id;")  # Get the last inserted ID
+       result = cursor.fetchone()
+       new_poi_id = result[0] if result else None
+
+       dbConnection.commit()  # commit the transaction
+      
+       print(f"CREATE POI. ID: {new_poi_id} Name: {poi_name}")
+
+       # Redirect the user to the updated webpage
+       return redirect("/poi")
+
+   except Exception as e:
+       print(f"Error creating POI: {e}")
+       return f"Error creating POI: {e}", 500
 
    finally:
        # Close the DB connection, if it exists

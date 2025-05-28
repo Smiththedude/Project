@@ -230,3 +230,59 @@ BEGIN
     SELECT LAST_INSERT_ID() AS 'new_q_id';
 END //
 DELIMITER ;
+
+-- ###########
+-- UPDATE QUEST
+-- ###########
+
+DROP PROCEDURE IF EXISTS sp_update_quest;
+DELIMITER //
+CREATE PROCEDURE sp_update_quest(
+    IN q_id INT,
+    IN q_status VARCHAR(50),
+    IN q_reward VARCHAR(100),
+    IN q_diff INT,
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    -- Update the quest in the Quests table
+    UPDATE Quests
+    SET QuestStatus = CASE WHEN q_status IS NOT NULL AND q_status != '' THEN q_status ELSE QuestStatus END,
+        QuestReward = CASE WHEN q_reward IS NOT NULL AND q_reward != '' THEN q_reward ELSE QuestReward END,
+        QuestDiff = CASE WHEN q_diff IS NOT NULL AND q_diff != '' THEN q_diff ELSE QuestDiff END
+    WHERE QuestID = q_id;
+
+    SET msg = 'Quest updated successfully.';
+END //
+DELIMITER ;
+
+-- ###########
+-- CREATE POI
+-- ###########
+
+DROP PROCEDURE IF EXISTS sp_create_poi;
+DELIMITER //
+CREATE PROCEDURE sp_create_poi(
+    IN poi_name VARCHAR(100),
+    IN poi_type VARCHAR(50),
+    IN poi_history TEXT,
+    IN poi_desc TEXT,
+    IN town_id INT,
+    OUT new_poi_id INT
+)
+BEGIN
+    -- Insert the new POI into the Points_of_Interest table
+    INSERT INTO Points_of_Interest (POI_Name, POI_Type, POI_History, POI_Desc, Towns_TownID)
+    VALUES (poi_name, poi_type, poi_history, poi_desc, town_id);
+
+    -- Get the ID of the newly created POI
+    SELECT LAST_INSERT_ID() INTO new_poi_id;
+    
+    -- Display the ID of the newly created POI
+    SELECT LAST_INSERT_ID() AS 'new_poi_id';
+    
+    -- Example procedure call
+    -- CALL sp_create_poi('Dragon Cave', 'Cave', 'Ancient dragon lair', 'Dark and dangerous cave', 1, @poi_id);
+    -- SELECT @poi_id AS 'POIID';
+END //
+DELIMITER ;
