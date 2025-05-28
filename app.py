@@ -646,6 +646,55 @@ def update_quest():
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
 
+@app.route("/poi/update", methods=["POST"])
+def update_poi():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        # Get form data
+        p_id = request.form["update_poi_id"]
+        p_name = request.form["update_poi_name"]
+        p_type = request.form["update_poi_type"]
+        p_history = request.form["update_poi_history"]
+        p_desc = request.form["update_poi_desc"]
+        
+        # To check for valid town id
+        town_id = None
+        if request.form["update_town_id"] and request.form["update_town_id"].strip():
+            town_id = int(request.form["update_town_id"])
+
+        # Create and execute our queries
+        # Using parameterized queries (Prevents SQL injection attacks)
+        query1 = "CALL sp_update_poi(%s, %s, %s, %s, %s, %s, @msg);"
+        cursor.execute(query1, (p_id, p_name, p_type, p_history, p_desc, town_id))
+
+        # Consume the result set (if any) before running the next query
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        dbConnection.commit()  # commit the transaction
+
+        query2 = "SELECT POI_Name, POI_Type FROM Points_of_Interest WHERE POIID = %s;"
+        cursor.execute(query2, (p_id,))  # Added comma to make it a tuple
+        rows = cursor.fetchone()  # Fetch updated POI info
+
+        print(f"UPDATE POI. ID: {p_id} Name: {rows[0]} Type: {rows[1]}")
+
+        # Redirect the user to the updated webpage
+        return redirect("/poi")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
 # ########################################
 # #####DELETE ROUTES
 @app.route('/delete_poi', methods=['POST'])

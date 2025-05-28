@@ -286,3 +286,32 @@ BEGIN
     -- SELECT @poi_id AS 'POIID';
 END //
 DELIMITER ;
+
+-- ###########
+-- UPDATE POI
+-- ###########
+
+DROP PROCEDURE IF EXISTS sp_update_poi;
+DELIMITER //
+CREATE PROCEDURE sp_update_poi(
+    IN p_id INT,
+    IN p_name VARCHAR(100),
+    IN p_type VARCHAR(50),
+    IN p_history TEXT,
+    IN p_desc TEXT,
+    IN town_id INT,
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    -- Update the POI in the Points_of_Interest table
+    UPDATE Points_of_Interest
+    SET POI_Name = CASE WHEN p_name IS NOT NULL AND p_name != '' THEN p_name ELSE POI_Name END,
+        POI_Type = CASE WHEN p_type IS NOT NULL AND p_type != '' THEN p_type ELSE POI_Type END,
+        POI_History = CASE WHEN p_history IS NOT NULL AND p_history != '' THEN p_history ELSE POI_History END,
+        POI_Desc = CASE WHEN p_desc IS NOT NULL AND p_desc != '' THEN p_desc ELSE POI_Desc END,
+        Towns_TownID = CASE WHEN town_id IS NOT NULL THEN town_id ELSE Towns_TownID END
+    WHERE POIID = p_id;
+
+    SET msg = 'POI updated successfully.';
+END //
+DELIMITER ;
