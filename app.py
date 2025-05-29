@@ -706,7 +706,7 @@ def delete_poi():
         poi_id = request.form.get('delete_poi_id')
         
         # Create DELETE query
-        query = f"DELETE FROM Points_of_Interest WHERE POIID = {poi_id};"
+        query = f"CALL sp_delete_poi({poi_id}, @msg);"
         
         # Execute the query
         db.query(dbConnection, query)
@@ -734,7 +734,7 @@ def delete_quest():
         quest_id = request.form.get('delete_quest_id')
         
         # Create DELETE query
-        query = f"DELETE FROM Quests WHERE QuestID = {quest_id};"
+        query = f"CALL sp_delete_quest({quest_id}, @msg);"
         
         # Execute the query
         db.query(dbConnection, query)
@@ -762,7 +762,7 @@ def delete_shop():
         shop_id = request.form.get('delete_shop_id')
         
         # Create DELETE query
-        query = f"DELETE FROM Shops WHERE ShopID = {shop_id};"
+        query = f"CALL sp_delete_shop({shop_id}, @msg);"
         
         # Execute the query
         db.query(dbConnection, query)
@@ -790,7 +790,7 @@ def delete_town():
         town_id = request.form.get('delete_town_id')
         
         # Create DELETE query
-        query = f"DELETE FROM Towns WHERE TownID = {town_id};"
+        query = f"CALL sp_delete_town({town_id}, @msg);"
         
         # Execute the query
         db.query(dbConnection, query)
@@ -819,7 +819,7 @@ def delete_town_quest():
         quest_id = request.form.get('delete_quest_id')
         
         # Create DELETE query - here we need both IDs since this is an intersection table
-        query = f"DELETE FROM Town_Quests WHERE Towns_TownID = {town_id} AND Quests_QuestID = {quest_id};"
+        query = f"CALL sp_delete_town_quest({town_id}, {quest_id}, @msg);"
         
         # Execute the query
         db.query(dbConnection, query)
@@ -848,7 +848,7 @@ def delete_town_shop():
         shop_id = request.form.get('delete_shop_id')
         
         # Create DELETE query - here we need both IDs since this is an intersection table
-        query = f"DELETE FROM Town_Shops WHERE Towns_TownID = {town_id} AND Shops_ShopID = {shop_id};"
+        query = f"CALL sp_delete_town_shop({town_id}, {shop_id}, @msg);"
         
         # Execute the query
         db.query(dbConnection, query)

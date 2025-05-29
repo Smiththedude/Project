@@ -315,3 +315,119 @@ BEGIN
     SET msg = 'POI updated successfully.';
 END //
 DELIMITER ;
+
+-- #############
+-- DELETE TOWN
+-- #############
+DROP PROCEDURE IF EXISTS sp_delete_town;
+DELIMITER //
+CREATE PROCEDURE sp_delete_town(
+    IN t_id INT,
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    DELETE FROM Towns WHERE TownID = t_id;
+    SET msg = 'Town deleted successfully.';
+
+    -- Example procedure call
+    -- CALL sp_delete_town(1, @msg);
+    -- SELECT @msg AS 'Message';
+END //
+DELIMITER ;
+
+-- #############
+-- DELETE SHOP
+-- #############
+DROP PROCEDURE IF EXISTS sp_delete_shop;
+DELIMITER //
+CREATE PROCEDURE sp_delete_shop(
+    IN s_id INT,
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    DELETE FROM Shops WHERE ShopID = s_id;
+    SET msg = 'Shop deleted successfully.';
+
+    -- Example procedure call
+    -- CALL sp_delete_shop(1, @msg);
+    -- SELECT @msg AS 'Message';
+END //
+DELIMITER ;
+
+-- #############
+-- DELETE QUEST
+-- #############
+DROP PROCEDURE IF EXISTS sp_delete_quest;
+DELIMITER //
+CREATE PROCEDURE sp_delete_quest(
+    IN q_id INT,
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    DELETE FROM Quests WHERE QuestID = q_id;
+    SET msg = 'Quest deleted successfully.';
+
+    -- Example procedure call
+    -- CALL sp_delete_quest(1, @msg);
+    -- SELECT @msg AS 'Message';
+END //
+DELIMITER ;
+
+-- #############
+-- DELETE POI
+-- #############
+DROP PROCEDURE IF EXISTS sp_delete_poi;
+DELIMITER //
+CREATE PROCEDURE sp_delete_poi(
+    IN p_id INT,
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    DELETE FROM Points_of_Interest WHERE POIID = p_id;
+    SET msg = 'POI deleted successfully.';
+
+    -- Example procedure call
+    -- CALL sp_delete_poi(1, @msg);
+    -- SELECT @msg AS 'Message';
+END //
+DELIMITER ;
+
+-- #############
+-- DELETE TOWN-QUEST RELATIONSHIP
+-- #############
+DROP PROCEDURE IF EXISTS sp_delete_town_quest;
+DELIMITER //
+CREATE PROCEDURE sp_delete_town_quest (
+    IN t_id INT,
+    IN q_id INT,
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    DELETE FROM Town_Quests WHERE Towns_TownID = t_id AND Quests_QuestID = q_id;
+    SET msg = 'Town-Quest relationship deleted successfully.';
+
+    -- Example procedure call
+    -- CALL sp_delete_town_quest(1, 1, @msg);
+    -- SELECT @msg AS 'Message';
+END //
+DELIMITER ;
+
+-- #############
+-- DELETE TOWN-SHOP RELATIONSHIP
+-- #############
+DROP PROCEDURE IF EXISTS sp_delete_town_shop;
+DELIMITER //
+CREATE PROCEDURE sp_delete_town_shop (
+    IN t_id INT,
+    IN s_id INT,
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    DELETE FROM Town_Shops WHERE Towns_TownID = t_id AND Shops_ShopID = s_id;
+    SET msg = 'Town-Shop relationship deleted successfully.';
+
+    -- Example procedure call
+    -- CALL sp_delete_town_shop(1, 1, @msg);
+    -- SELECT @msg AS 'Message';
+END //
+DELIMITER ;
