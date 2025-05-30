@@ -174,6 +174,12 @@ QuestID = :quest_id_selected_from_quest_list;
 INSERT INTO Town_Quests (Towns_TownID, Quests_QuestID) VALUES
 (:town_id_from_dropdown_input, :quest_id_from_dropdown_input);
 
+-- update town-quest association
+UPDATE Town_Quests
+SET Towns_TownID = :town_id_from_form_input,
+    Quests_QuestID = :quest_id_from_form_input
+WHERE Towns_TownID = :town_id_from_dropdown_input AND Quests_QuestID = :quest_id_from_dropdown_input;
+
 --###################################
 -- TOWN_SHOPS PAGE
 --###################################
@@ -192,3 +198,9 @@ ShopID = :shop_id_selected_from_shop_list;
 -- associate a town with a shop (M:M)
 INSERT INTO Town_Shops (Towns_TownID, Shops_ShopID) VALUES
 (:town_id_from_dropdown_input, :shop_id_from_dropdown_input);
+
+-- update town-shop association
+UPDATE Town_Shops
+SET Towns_TownID = :town_id_from_form_input,
+    Shops_ShopID = :shop_id_from_form_input
+WHERE Towns_TownID = :town_id_from_dropdown_input AND Shops_ShopID = :shop_id_from_dropdown_input;
