@@ -135,23 +135,34 @@ def db_town_quests():
 @app.route("/town_shops", methods=["GET"])
 def db_town_shops():
     try:
-        dbConnection = db.connectDB()  # Open our database connection
-
-        # Query all town_shops
+        dbConnection = db.connectDB()
+        
+        # Get all town_shops relationships
         query = "SELECT Town_Shops.Towns_TownID, Towns.TownName AS Town, Town_Shops.Shops_ShopID, Shops.ShopName AS Shop \
             FROM Town_Shops \
             JOIN Towns ON Town_Shops.Towns_TownID = Towns.TownID \
             JOIN Shops ON Town_Shops.Shops_ShopID = Shops.ShopID \
             ORDER BY Town_Shops.Towns_TownID ASC;"
-        town_shops = db.query(dbConnection, query).fetchall()
-
-        # Render the town_shops.j2 file and pass the town_shops data
-        return render_template("town_shops.j2", town_shops=town_shops)
-
+        town_shops_result = db.query(dbConnection, query)
+        town_shops = town_shops_result.fetchall() if town_shops_result else []
+        
+        # Get all towns for dropdown
+        query2 = "SELECT TownID, TownName FROM Towns"
+        towns_result = db.query(dbConnection, query2)
+        towns = towns_result.fetchall() if towns_result else []
+        
+        # Get all shops for dropdown
+        query3 = "SELECT ShopID, ShopName FROM Shops"
+        shops_result = db.query(dbConnection, query3)
+        shops = shops_result.fetchall() if shops_result else []
+        
+        # Render the town_shops.j2 file and pass the data
+        return render_template("town_shops.j2", town_shops=town_shops, towns=towns, shops=shops)
+        
     except Exception as e:
-        print(f"Error retrieving quests: {e}")
-        return "An error occurred while retrieving town_shops.", 500
-
+        print(f"Error retrieving town-shop relationships: {e}")
+        return f"An error occurred while retrieving town_shops: {e}", 500
+        
     finally:
         if "dbConnection" in locals() and dbConnection:
             dbConnection.close()
@@ -440,6 +451,49 @@ def create_poi():
        if "dbConnection" in locals() and dbConnection:
            dbConnection.close()
 
+@app.route('/town_shops/create', methods=['POST'])
+def create_town_shop():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        # Get form data
+        t_id = request.form["town_id"]
+        s_id = request.form["shop_id"]
+
+        # Create and execute our queries
+        # Using parameterized queries (Prevents SQL injection attacks)
+        query1 = "CALL sp_add_town_shop(%s, %s, @msg);"
+        cursor.execute(query1, (t_id, s_id))
+
+        # Consume the result set (if any) before running the next query
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        # Fetch the result of the stored procedure
+        cursor.execute("SELECT @msg;")  # Get the message
+        result = cursor.fetchone()
+        msg = result[0] if result else None
+
+        dbConnection.commit()  # commit the transaction
+        
+        print(f"CREATE Town_Shop. TownID: {t_id} ShopID: {s_id} Message: {msg}")
+
+        # Redirect the user to the updated webpage
+        return redirect("/town_shops")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+    
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+
 
 # ########################################
 # #####UPDATE ROUTES
@@ -651,6 +705,51 @@ def update_poi():
 
         # Redirect the user to the updated webpage
         return redirect("/poi")
+
+    except Exception as e:
+        print(f"Error executing queries: {e}")
+        return (
+            "An error occurred while executing the database queries.",
+            500,
+        )
+
+    finally:
+        # Close the DB connection, if it exists
+        if "dbConnection" in locals() and dbConnection:
+            dbConnection.close()
+
+
+@app.route("/town_shops/update", methods=["POST"])
+def update_town_shop():
+    try:
+        dbConnection = db.connectDB()  # Open our database connection
+        cursor = dbConnection.cursor()
+
+        # Get form data
+        old_rel = request.form["original_town_shop"]
+        old_t_id, old_s_id = map(int, old_rel.split(","))
+        t_id = request.form["town_id"]
+        s_id = request.form["shop_id"]
+
+        # Create and execute our queries
+        # Using parameterized queries (Prevents SQL injection attacks)
+        query1 = "CALL sp_update_town_shop(%s, %s, %s, %s, @msg);"
+        cursor.execute(query1, (old_t_id, old_s_id, t_id, s_id))
+
+        # Consume the result set (if any) before running the next query
+        cursor.nextset()  # Move to the next result set (for CALL statements)
+
+        cursor.execute("SELECT @msg;")  # Get informational output from procedure
+        result = cursor.fetchone()[0]
+
+        dbConnection.commit()  # commit the transaction
+
+        print(f"Old TownID: {old_t_id} Old ShopID: {old_s_id}") 
+        print(f"New TownID: {t_id} New ShopID: {s_id}")
+        print(f"Message: {result}")
+
+        # Redirect the user to the updated webpage
+        return redirect("/town_shops")
 
     except Exception as e:
         print(f"Error executing queries: {e}")

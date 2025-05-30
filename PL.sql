@@ -431,3 +431,81 @@ BEGIN
     -- SELECT @msg AS 'Message';
 END //
 DELIMITER ;
+
+-- ##############################
+-- CREATE TOWN-SHOP RELATIONSHIP
+-- ##############################
+
+DROP PROCEDURE IF EXISTS sp_add_town_shop;
+
+DELIMITER //
+CREATE PROCEDURE sp_add_town_shop (
+    IN t_id INT,
+    IN s_id INT,
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    DECLARE rel_exists INT;
+    
+    -- Check if the relationship already exists
+    SELECT COUNT(*) INTO rel_exists
+    FROM Town_Shops
+    WHERE Towns_TownID = t_id AND Shops_ShopID = s_id;
+    
+    IF rel_exists > 0 THEN
+        SET msg = 'This town-shop relationship already exists.';
+    ELSE
+        INSERT INTO Town_Shops (Towns_TownID, Shops_ShopID)
+        VALUES (t_id, s_id);
+        
+        SET msg = 'Town-Shop relationship added successfully.';
+    END IF;
+    
+    SELECT msg AS 'Message';
+END //
+DELIMITER ;
+
+-- ##############################
+-- UPDATE TOWN-SHOP RELATIONSHIP
+-- ##############################
+
+DROP PROCEDURE IF EXISTS sp_update_town_shop;
+
+DELIMITER //
+CREATE PROCEDURE sp_update_town_shop (
+    IN old_t_id INT,
+    IN old_s_id INT,
+    IN new_t_id INT,
+    IN new_s_id INT,
+    OUT msg VARCHAR(255)
+)
+BEGIN
+    DECLARE old_exists INT;
+    DECLARE new_exists INT;
+
+    -- Check if the old town-shop relationship exists
+    SELECT COUNT(*) INTO old_exists
+    FROM Town_Shops
+    WHERE Towns_TownID = old_t_id AND Shops_ShopID = old_s_id;
+
+    -- Check if the new town-shop relationship already exists
+    SELECT COUNT(*) INTO new_exists
+    FROM Town_Shops
+    WHERE Towns_TownID = new_t_id AND Shops_ShopID = new_s_id;
+
+    IF old_exists = 0 THEN
+        SET msg = 'Original relationship does not exist.';
+    ELSEIF new_exists > 0 THEN
+        SET msg = 'New relationship already exists.';
+    ELSE
+        UPDATE Town_Shops
+        SET Towns_TownID = new_t_id,
+            Shops_ShopID = new_s_id
+        WHERE Towns_TownID = old_t_id AND Shops_ShopID = old_s_id;
+        
+        SET msg = 'Town-Shop relationship updated successfully.';
+    END IF;
+    
+    SELECT msg AS 'Message';
+END //
+DELIMITER ;

@@ -40,5 +40,67 @@
     </tbody>
 </table>
 
+{# CREATE form #}
+<h2>Create Town-Shop Relationship</h2>
+<form class="cuForm" id="create_town_shop_form" method="POST" action="/town_shops/create">
+    <label for="town_id">Town: </label>
+    <select name="town_id" id="town_id" required>
+        <option value="" disabled selected>Select a Town</option>
+        {% for town in towns %}
+        <option value="{{ town.TownID }}">
+            {{ town.TownID }} - {{ town.TownName }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label for="shop_id">Shop: </label>
+    <select name="shop_id" id="shop_id" required>
+        <option value="" disabled selected>Select a Shop</option>
+        {% for shop in shops %}
+        <option value="{{ shop.ShopID }}">
+            {{ shop.ShopID }} - {{ shop.ShopName }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Create Relationship">
+</form>
+
+{# UPDATE form #}
+<h2>Update Town-Shop Relationship</h2>
+<form class="cuForm" id="update_town_shop_form" method="POST" action="/town_shops/update">
+    <label for="original_town_shop">Select Relationship to Update: </label>
+    <select name="original_town_shop" id="original_town_shop" required>
+        <option value="" disabled selected>Select a Town-Shop Relationship</option>
+        {% for town_shop in town_shops %}
+        <option value="{{ town_shop.Towns_TownID }},{{ town_shop.Shops_ShopID }}">
+            {{ town_shop.Town }} (ID: {{ town_shop.Towns_TownID }}) - {{ town_shop.Shop }} (ID: {{ town_shop.Shops_ShopID }})
+        </option>
+        {% endfor %}
+    </select>
+
+    <label for="town_id">New Town: </label>
+    <select name="town_id" id="town_id" required>
+        <option value="" disabled selected>Select a Town</option>
+        {% for town in towns %}
+        <option value="{{ town.TownID }}">
+            {{ town.TownID }} - {{ town.TownName }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <label for="shop_id">New Shop: </label>
+    <select name="shop_id" id="shop_id" required>
+        <option value="" disabled selected>Select a Shop</option>
+        {% for shop in shops %}
+        <option value="{{ shop.ShopID }}">
+            {{ shop.ShopID }} - {{ shop.ShopName }}
+        </option>
+        {% endfor %}
+    </select>
+
+    <input type="submit" value="Update Relationship">
+</form>
+
 
 {% endblock %}
