@@ -6,7 +6,6 @@
 {# READ table #}
 <table>
     <thead>
-        {# For the table header row, we print the DB attribute names #}
         <tr>
             {% for key in shops[0].keys() %}
             <th>{{ key }}</th>
@@ -16,7 +15,7 @@
     </thead>
 
     <tbody>
-        {# For each row, print the ShopID, ShopName, Location, and Owner #}
+        {# For each row, get the ShopID, ShopName, Location, and Owner #}
         {% for shop in shops %}
         <tr>
             <td>{{ shop.ShopID }}</td>

@@ -6,7 +6,7 @@
 {# READ table #}
 <table>
     <thead>
-        {# For the table header row, we print the DB attribute names #}
+        {# For the table header row, we get the DB attribute names #}
         <tr>
             {% for key in towns[0].keys() %}
             <th>{{ key }}</th>
@@ -15,7 +15,7 @@
     </thead>
 
     <tbody>
-        {# For each row, print the id, name, region, and alignment #}
+        {# For each row, get the id, name, region, and alignment #}
         {% for town in towns %}
         <tr>
             <td>{{ town.TownID }}</td>
