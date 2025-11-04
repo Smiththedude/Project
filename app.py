@@ -828,8 +828,8 @@ def delete_shop():
         
         # Get the Shop ID from the form
         shop_id = request.form.get('delete_shop_id')
-        
-        # Create DELETE query
+        if not re.match("^[a-zA-Z0-9_]+$", str(shop_id)):
+            return "Invalid input", 400
         query = f"CALL sp_delete_shop({shop_id}, @msg);"
         
         # Execute the query
@@ -885,8 +885,10 @@ def delete_town_quest():
         # Get the Town ID and Quest ID from the form
         town_id = request.form.get('delete_town_id')
         quest_id = request.form.get('delete_quest_id')
-        
-        # Create DELETE query - here we need both IDs since this is an intersection table
+        if not re.match("^[a-zA-Z0-9_]+$", str(town_id)):
+            return "Invalid input", 400
+        if not re.match("^[a-zA-Z0-9_]+$", str(quest_id)):
+            return "Invalid input", 400
         query = f"CALL sp_delete_town_quest({town_id}, {quest_id}, @msg);"
         
         # Execute the query
@@ -914,8 +916,10 @@ def delete_town_shop():
         # Get the Town ID and Shop ID from the form
         town_id = request.form.get('delete_town_id')
         shop_id = request.form.get('delete_shop_id')
-        
-        # Create DELETE query - here we need both IDs since this is an intersection table
+        if not re.match("^[a-zA-Z0-9_]+$", str(town_id)):
+            return "Invalid input", 400
+        if not re.match("^[a-zA-Z0-9_]+$", str(shop_id)):
+            return "Invalid input", 400
         query = f"CALL sp_delete_town_shop({town_id}, {shop_id}, @msg);"
         
         # Execute the query
